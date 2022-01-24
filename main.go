@@ -80,6 +80,8 @@ sprite_file:
 
   case "trun":
     outName := method1(os.Args)
+    fmt.Println("Finished generating frames.")
+    
     begin := os.Getenv("SNAP")
     command := "ffmpeg"
     if begin != "" && ! strings.HasPrefix(begin, "/snap/go/") {
