@@ -39,13 +39,10 @@ Main Commands:
   init    Creates a config file describing your video. Edit to your own requirements.
           The file from init is expected for trun and frun.
 
-  trun    Renders a project with the config created above. It expects a config file (created from 'init' above)
-          trun (test run) would create an mp4 video for testing.
+  run     Renders a project with the config created above. It expects a config file (created from 'init' above)
+          run would generate an mp4 video.
           All files must be placed in the working directory.
 
-  frun    Renders a project with the config created above. It expects a config file (created from 'init' above)
-          trun (test run) would create png frames for other programs (eg. lyrics818).
-          All files must be placed in the working directory.
   			`)
 
 	case "pwd":
@@ -75,7 +72,7 @@ sprite_file:
     fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
 
-  case "trun":
+  case "run":
     outName := method1(os.Args)
     fmt.Println("Finished generating frames.")
 
@@ -94,10 +91,6 @@ sprite_file:
 
     os.RemoveAll(filepath.Join(rootPath, outName))
     fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName + ".mp4"))
-
-  case "frun":
-    outName := method1(os.Args)
-    fmt.Println("View the frames at: ", filepath.Join(rootPath, outName))
 
 	default:
 		color2.Red.Println("Unexpected command. Run the cli with --help to find out the supported commands.")

@@ -49,17 +49,11 @@ func method1(args []string) string {
     panic(err)
   }
 
-  backgroundImg := image.NewNRGBA(image.Rect(0,0,1366,768))
   backgroundColor := hexToNRGBA(conf.Get("background_color"))
-
-  for x := 0; x < backgroundImg.Bounds().Dx(); x++ {
-    for y := 0; y < backgroundImg.Bounds().Dy(); y++ {
-      backgroundImg.Set(x, y, backgroundColor)
-    }
-  }
+  backgroundImg := imaging.New(1366, 768, backgroundColor)
 
   rand.Seed(time.Now().UnixNano())
-  radius := rand.Intn(200)
+  radius := rand.Intn(200 - 50) + 50
   radius2 := rand.Intn(200)
   xOrigin := rand.Intn(backgroundImg.Bounds().Dx() / 2)
   yOrigin := rand.Intn(backgroundImg.Bounds().Dy() / 2)
