@@ -7,9 +7,6 @@ import (
   "time"
   "path/filepath"
   "github.com/bankole7782/zazabul"
-  "github.com/disintegration/imaging"
-  "image"
-  "math"
   "os/exec"
   "strings"
 )
@@ -81,7 +78,7 @@ sprite_file:
   case "trun":
     outName := method1(os.Args)
     fmt.Println("Finished generating frames.")
-    
+
     begin := os.Getenv("SNAP")
     command := "ffmpeg"
     if begin != "" && ! strings.HasPrefix(begin, "/snap/go/") {
@@ -95,6 +92,7 @@ sprite_file:
       panic(err)
     }
 
+    os.RemoveAll(filepath.Join(rootPath, outName))
     fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName + ".mp4"))
 
   case "frun":
@@ -106,13 +104,4 @@ sprite_file:
 		os.Exit(1)
 	}
 
-}
-
-
-func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64) image.Image {
-  angleInRadians := angle * (math.Pi / 180)
-  x := float64(radius) * math.Sin(-angleInRadians)
-  y := float64(radius) * math.Cos(-angleInRadians)
-
-  return imaging.Paste(background, sprite, image.Pt(xOrigin + int(x), yOrigin + int(y)))
 }
