@@ -138,7 +138,10 @@ sprite_file:
         outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
 
         tinyAngle += angleIncrement
-        toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle)
+        toWriteImage := writeRotation(backgroundImg, spriteImg, 0, yOrigin, radius, tinyAngle)
+        toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin, yOrigin, radius, tinyAngle)
+        thirdXOrigin := backgroundImg.Bounds().Dx() - (spriteImg.Bounds().Dx() / 2)
+        toWriteImage = writeRotation(toWriteImage, spriteImg, thirdXOrigin, yOrigin, radius, tinyAngle)
         imaging.Save(toWriteImage, outPath)
       }
 
