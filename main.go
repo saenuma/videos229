@@ -8,12 +8,10 @@ import (
   "path/filepath"
   "github.com/bankole7782/zazabul"
   "github.com/disintegration/imaging"
-  "math/rand"
   "image"
-  // "image/color"
   "math"
-  "strconv"
-
+  "os/exec"
+  "strings"
 )
 
 func main() {
@@ -31,7 +29,7 @@ func main() {
 
 	switch os.Args[1] {
 	case "--help", "help", "h":
-  		fmt.Println(`videos229 generates videos that could be used for the background of ads
+  		fmt.Println(`videos229 generates videos that could be used for the background of adverts
 and lyrics videos.
 
 The number of frames per seconds is 60. This is what this program uses.
@@ -42,12 +40,15 @@ Directory Commands:
 
 Main Commands:
   init    Creates a config file describing your video. Edit to your own requirements.
-          The file from init1 is expected for r1.
+          The file from init is expected for trun and frun.
 
-  run     Renders a project with the config created above. It expects a blender file and a
-          launch file (created from 'init' above)
+  trun    Renders a project with the config created above. It expects a config file (created from 'init' above)
+          trun (test run) would create an mp4 video for testing.
           All files must be placed in the working directory.
 
+  frun    Renders a project with the config created above. It expects a config file (created from 'init' above)
+          trun (test run) would create png frames for other programs (eg. lyrics818).
+          All files must be placed in the working directory.
   			`)
 
 	case "pwd":
@@ -77,77 +78,26 @@ sprite_file:
     fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
 
-  case "run":
-  	if len(os.Args) != 3 {
-  		color2.Red.Println("The run command expects a file created by the init1 command")
-  		os.Exit(1)
-  	}
+  case "trun":
+    outName := method1(os.Args)
+    begin := os.Getenv("SNAP")
+    command := "ffmpeg"
+    if begin != "" && ! strings.HasPrefix(begin, "/snap/go/") {
+      command = filepath.Join(begin, "bin", "ffmpeg")
+    }
 
-  	confPath := filepath.Join(rootPath, os.Args[2])
-
-  	conf, err := zazabul.LoadConfigFile(confPath)
-  	if err != nil {
-  		panic(err)
-  		os.Exit(1)
-  	}
-
-  	for _, item := range conf.Items {
-  		if item.Value == "" {
-  			color2.Red.Println("Every field in the launch file is compulsory.")
-  			os.Exit(1)
-  		}
-  	}
-
-
-    outName := "s" + time.Now().Format("20060102T150405")
-    renderPath := filepath.Join(rootPath, outName)
-    os.MkdirAll(renderPath, 0777)
-
-    spriteImg, err := imaging.Open(filepath.Join(rootPath, conf.Get("sprite_file")))
+    out, err := exec.Command(command, "-framerate", "60", "-i", filepath.Join(rootPath, outName, "%d.png"),
+      filepath.Join(rootPath, outName + ".mp4")).CombinedOutput()
     if err != nil {
+      fmt.Println(string(out))
       panic(err)
     }
 
-    backgroundImg := image.NewNRGBA(image.Rect(0,0,1366,768))
-    backgroundColor := hexToNRGBA(conf.Get("background_color"))
+    fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName + ".mp4"))
 
-    for x := 0; x < backgroundImg.Bounds().Dx(); x++ {
-      for y := 0; y < backgroundImg.Bounds().Dy(); y++ {
-        backgroundImg.Set(x, y, backgroundColor)
-      }
-    }
-
-    rand.Seed(time.Now().UnixNano())
-
-    xOrigin := (backgroundImg.Bounds().Dx() / 2 ) - (spriteImg.Bounds().Dx() / 2)
-    yOrigin := (backgroundImg.Bounds().Dy() / 2 ) - (spriteImg.Bounds().Dy() / 2)
-
-    radius := 200
-
-    var tinyAngle float64
-    var angleIncrement float64 = float64(0.5)
-
-    for seconds := 0; seconds < 60; seconds++ {
-
-      // if tinyAngle == 360 {
-      //   break
-      // }
-      //
-      for i := 1; i <= 60; i++ {
-        out := (60 * seconds) + i
-        outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
-
-        tinyAngle += angleIncrement
-        toWriteImage := writeRotation(backgroundImg, spriteImg, 0, yOrigin, radius, tinyAngle)
-        toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin, yOrigin, radius, tinyAngle)
-        thirdXOrigin := backgroundImg.Bounds().Dx() - (spriteImg.Bounds().Dx() / 2)
-        toWriteImage = writeRotation(toWriteImage, spriteImg, thirdXOrigin, yOrigin, radius, tinyAngle)
-        imaging.Save(toWriteImage, outPath)
-      }
-
-
-    }
-
+  case "frun":
+    outName := method1(os.Args)
+    fmt.Println("View the frames at: ", filepath.Join(rootPath, outName))
 
 	default:
 		color2.Red.Println("Unexpected command. Run the cli with --help to find out the supported commands.")
@@ -158,7 +108,6 @@ sprite_file:
 
 
 func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64) image.Image {
-  // fmt.Println(angle)
   angleInRadians := angle * (math.Pi / 180)
   x := float64(radius) * math.Sin(-angleInRadians)
   y := float64(radius) * math.Cos(-angleInRadians)
