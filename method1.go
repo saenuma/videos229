@@ -20,7 +20,7 @@ func method1(args []string) string {
   rootPath, _ := GetRootPath()
 
   if len(args) != 3 {
-    color2.Red.Println("The run command expects a file created by the init1 command")
+    color2.Red.Println("The run command expects a file created by the init command")
     os.Exit(1)
   }
 
@@ -59,11 +59,12 @@ func method1(args []string) string {
   }
 
   rand.Seed(time.Now().UnixNano())
-
-  xOrigin := (backgroundImg.Bounds().Dx() / 2 ) - (spriteImg.Bounds().Dx() / 2)
-  yOrigin := (backgroundImg.Bounds().Dy() / 2 ) - (spriteImg.Bounds().Dy() / 2)
-
-  radius := 100
+  radius := rand.Intn(200)
+  radius2 := rand.Intn(200)
+  xOrigin := rand.Intn(backgroundImg.Bounds().Dx() / 2)
+  yOrigin := rand.Intn(backgroundImg.Bounds().Dy() / 2)
+  xOrigin2 := rand.Intn(backgroundImg.Bounds().Dx())
+  yOrigin2 := rand.Intn(backgroundImg.Bounds().Dy())
 
   var tinyAngle float64
   var angleIncrement float64 = float64(0.5)
@@ -75,10 +76,9 @@ func method1(args []string) string {
       outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
 
       tinyAngle += angleIncrement
-      toWriteImage := writeRotation(backgroundImg, spriteImg, 0, yOrigin, radius, tinyAngle, "pos")
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin, yOrigin, radius, tinyAngle, "neg")
-      thirdXOrigin := backgroundImg.Bounds().Dx() - (spriteImg.Bounds().Dx() / 2)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, thirdXOrigin, yOrigin, radius, tinyAngle, "pos")
+
+      toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius2, tinyAngle, 2)
       imaging.Save(toWriteImage, outPath)
     }
 
@@ -89,16 +89,16 @@ func method1(args []string) string {
 }
 
 
-func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64, rotationStyle string) image.Image {
+func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64, rotationStyle int) image.Image {
   angleInRadians := angle * (math.Pi / 180)
   var x float64
   var y float64
-  if rotationStyle == "pos" {
-    x = float64(radius) * math.Sin(angleInRadians)
-    y = float64(radius) * math.Cos(angleInRadians)
-  } else {
+  if rotationStyle == 1 {
     x = float64(radius) * math.Sin(-angleInRadians)
     y = float64(radius) * math.Cos(-angleInRadians)
+  } else {
+    x = float64(radius) * math.Sin(angleInRadians)
+    y = float64(radius) * math.Cos(angleInRadians)
   }
 
   return imaging.Paste(background, sprite, image.Pt(xOrigin + int(x), yOrigin + int(y)))
