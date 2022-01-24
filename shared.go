@@ -6,6 +6,9 @@ import (
   "github.com/pkg/errors"
   "path/filepath"
   "strconv"
+  "image/color"
+  "github.com/go-playground/colors"
+
   // "fmt"
 )
 
@@ -40,4 +43,15 @@ func timeFormatToSeconds(s string) int {
   }
   totalSecondsOfSong := (60 * minutesPartConverted) + secondsPartConverted
   return totalSecondsOfSong
+}
+
+
+func hexToNRGBA(s string) color.RGBA {
+  hex, err := colors.ParseHEX(s)
+  if err != nil {
+    panic(err)
+  }
+  nCR := hex.ToRGBA()
+  newColor := color.RGBA{uint8(nCR.R), uint8(nCR.G), uint8(nCR.B), 255}
+  return newColor
 }
