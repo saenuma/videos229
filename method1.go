@@ -10,6 +10,7 @@ import (
   "github.com/disintegration/imaging"
   "math/rand"
   "image"
+  "image/color"
   "strconv"
   "math"
 )
@@ -52,14 +53,17 @@ func method1(args []string) string {
   backgroundColor := hexToNRGBA(conf.Get("background_color"))
   backgroundImg := imaging.New(1366, 768, backgroundColor)
 
-  rand.Seed(time.Now().UnixNano())
+  var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
   radius := 200
-  xOrigin := rand.Intn(backgroundImg.Bounds().Dx() / 3)
-  yOrigin := rand.Intn(backgroundImg.Bounds().Dy() / 3)
-  xOrigin2 := rand.Intn(backgroundImg.Bounds().Dx() * 2 / 3)
-  yOrigin2 := rand.Intn(backgroundImg.Bounds().Dy() * 2 / 3)
-  xOrigin3 := rand.Intn(backgroundImg.Bounds().Dx())
-  yOrigin3 := rand.Intn(backgroundImg.Bounds().Dy())
+  xOrigin := seededRand.Intn(backgroundImg.Bounds().Dx())
+  yOrigin := seededRand.Intn(backgroundImg.Bounds().Dy())
+  xOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dx())
+  yOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dy())
+  xOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dx())
+  yOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dy())
+  xOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dx())
+  yOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dy())
   var tinyAngle float64
   var angleIncrement float64 = float64(0.5)
 
@@ -74,6 +78,7 @@ func method1(args []string) string {
       toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
       toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
       toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, 2)
       imaging.Save(toWriteImage, outPath)
     }
 
@@ -86,15 +91,31 @@ func method1(args []string) string {
 
 func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64, rotationStyle int) image.Image {
   angleInRadians := angle * (math.Pi / 180)
-  var x float64
-  var y float64
+  var xCircle float64
+  var yCircle float64
   if rotationStyle == 1 {
-    x = float64(radius) * math.Sin(-angleInRadians)
-    y = float64(radius) * math.Cos(-angleInRadians)
+    xCircle = float64(radius) * math.Sin(-angleInRadians)
+    yCircle = float64(radius) * math.Cos(-angleInRadians)
   } else {
-    x = float64(radius) * math.Sin(angleInRadians)
-    y = float64(radius) * math.Cos(angleInRadians)
+    xCircle = float64(radius) * math.Sin(angleInRadians)
+    yCircle = float64(radius) * math.Cos(angleInRadians)
   }
 
-  return imaging.Paste(background, sprite, image.Pt(xOrigin + int(x), yOrigin + int(y)))
+  newBackgroundImg := imaging.New(1366, 768, color.White)
+  newBackgroundImg = imaging.Paste(newBackgroundImg, background, image.Pt(0, 0))
+
+
+  for y := 0; y < sprite.Bounds().Max.Y; y++ {
+    for x := 0; x < sprite.Bounds().Max.X; x++ {
+      tmpColor := sprite.At(x, y)
+      r, g, b, a := tmpColor.RGBA()
+      if r == 0 && g == 0 && b == 0 && a == 0 {
+        continue
+      } else {
+        newBackgroundImg.Set(xOrigin + int(xCircle) + x, yOrigin + int(yCircle) + y, tmpColor)
+      }
+    }
+  }
+
+  return newBackgroundImg
 }
