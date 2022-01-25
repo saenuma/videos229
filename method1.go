@@ -56,14 +56,14 @@ func method1(args []string) string {
   var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
   radius := 200
-  xOrigin := seededRand.Intn(backgroundImg.Bounds().Dx())
-  yOrigin := seededRand.Intn(backgroundImg.Bounds().Dy())
-  xOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dx())
-  yOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dy())
-  xOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dx())
-  yOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dy())
-  xOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dx())
-  yOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dy())
+  xOrigin := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+  yOrigin := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
+  xOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+  yOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
+  xOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+  yOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
+  xOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+  yOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
   var tinyAngle float64
   var angleIncrement float64 = float64(0.5)
 
@@ -75,10 +75,10 @@ func method1(args []string) string {
 
       tinyAngle += angleIncrement
 
-      toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, 1)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, 2)
+      toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, seededRand.Intn(1) + 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, seededRand.Intn(1) + 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, seededRand.Intn(1) + 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, seededRand.Intn(1) + 1)
       imaging.Save(toWriteImage, outPath)
     }
 
