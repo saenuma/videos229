@@ -53,13 +53,13 @@ func method1(args []string) string {
   backgroundImg := imaging.New(1366, 768, backgroundColor)
 
   rand.Seed(time.Now().UnixNano())
-  radius := rand.Intn(200 - 50) + 50
-  radius2 := rand.Intn(200)
-  xOrigin := rand.Intn(backgroundImg.Bounds().Dx() / 2)
-  yOrigin := rand.Intn(backgroundImg.Bounds().Dy() / 2)
-  xOrigin2 := rand.Intn(backgroundImg.Bounds().Dx())
-  yOrigin2 := rand.Intn(backgroundImg.Bounds().Dy())
-
+  radius := 200
+  xOrigin := rand.Intn(backgroundImg.Bounds().Dx() / 3)
+  yOrigin := rand.Intn(backgroundImg.Bounds().Dy() / 3)
+  xOrigin2 := rand.Intn(backgroundImg.Bounds().Dx() * 2 / 3)
+  yOrigin2 := rand.Intn(backgroundImg.Bounds().Dy() * 2 / 3)
+  xOrigin3 := rand.Intn(backgroundImg.Bounds().Dx())
+  yOrigin3 := rand.Intn(backgroundImg.Bounds().Dy())
   var tinyAngle float64
   var angleIncrement float64 = float64(0.5)
 
@@ -72,7 +72,8 @@ func method1(args []string) string {
       tinyAngle += angleIncrement
 
       toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius2, tinyAngle, 2)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, 1)
       imaging.Save(toWriteImage, outPath)
     }
 
