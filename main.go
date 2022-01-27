@@ -57,7 +57,7 @@ sprite_file:
 
 // method. The method are in numbers. Allowed values are 1, 2.
 // 1: for rotation style
-// 2: for wave movement style
+// 2: for disappearing pattern style
 method: 1
 
   	`
