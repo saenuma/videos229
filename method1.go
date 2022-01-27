@@ -64,6 +64,10 @@ func method1(args []string) string {
   yOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
   xOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
   yOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
+  xOrigin5 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+  yOrigin5 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
+  xOrigin6 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+  yOrigin6 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
   var tinyAngle float64
   var angleIncrement float64 = float64(0.5)
 
@@ -75,10 +79,12 @@ func method1(args []string) string {
 
       tinyAngle += angleIncrement
 
-      toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, seededRand.Intn(1) + 1)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, seededRand.Intn(1) + 1)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, seededRand.Intn(1) + 1)
-      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, seededRand.Intn(1) + 1)
+      toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, 2)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin5, yOrigin5, radius, tinyAngle, 1)
+      toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin6, yOrigin6, radius, tinyAngle, 2)
       imaging.Save(toWriteImage, outPath)
     }
 
