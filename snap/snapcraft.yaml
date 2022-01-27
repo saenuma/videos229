@@ -26,5 +26,5 @@ parts:
 
 
 apps:
-  lyrics818:
+  videos229:
     command: bin/videos229
