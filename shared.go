@@ -6,10 +6,9 @@ import (
   "github.com/pkg/errors"
   "path/filepath"
   "strconv"
+  "image"
   "image/color"
-  "github.com/go-playground/colors"
-
-  // "fmt"
+  "image/draw"
 )
 
 
@@ -46,12 +45,11 @@ func timeFormatToSeconds(s string) int {
 }
 
 
-func hexToNRGBA(s string) color.RGBA {
-  hex, err := colors.ParseHEX(s)
-  if err != nil {
-    panic(err)
-  }
-  nCR := hex.ToRGBA()
-  newColor := color.RGBA{uint8(nCR.R), uint8(nCR.G), uint8(nCR.B), 255}
-  return newColor
+func pasteWithoutTransparentBackground(backgroundImg *image.NRGBA, spriteImg image.Image, xOrigin, yOrigin int) *image.NRGBA {
+  newRectangle := image.Rect(xOrigin, yOrigin, xOrigin + spriteImg.Bounds().Dx(), yOrigin + spriteImg.Bounds().Dy())
+  draw.DrawMask(backgroundImg, newRectangle, spriteImg, image.Pt(0,0),
+    image.NewUniform(color.RGBA{255, 255, 255, 255 }), image.Pt(0,0),
+    draw.Over)
+
+  return backgroundImg
 }

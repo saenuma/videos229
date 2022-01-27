@@ -3,7 +3,6 @@ package main
 import (
   "os"
   // "fmt"
-  color2 "github.com/gookit/color"
   "time"
   "path/filepath"
   "github.com/bankole7782/zazabul"
@@ -13,33 +12,13 @@ import (
   "image/color"
   "strconv"
   "math"
+  "github.com/lucasb-eyer/go-colorful"
 )
 
 
 // method1 generates a video with the sprite dancing round a circle
-func method1(args []string) string {
+func method1(conf zazabul.Config) string {
   rootPath, _ := GetRootPath()
-
-  if len(args) != 3 {
-    color2.Red.Println("The run command expects a file created by the init command")
-    os.Exit(1)
-  }
-
-  confPath := filepath.Join(rootPath, args[2])
-
-  conf, err := zazabul.LoadConfigFile(confPath)
-  if err != nil {
-    panic(err)
-    os.Exit(1)
-  }
-
-  for _, item := range conf.Items {
-    if item.Value == "" {
-      color2.Red.Println("Every field in the launch file is compulsory.")
-      os.Exit(1)
-    }
-  }
-
 
   outName := "s" + time.Now().Format("20060102T150405")
   renderPath := filepath.Join(rootPath, outName)
@@ -50,7 +29,10 @@ func method1(args []string) string {
     panic(err)
   }
 
-  backgroundColor := hexToNRGBA(conf.Get("background_color"))
+  backgroundColor, err := colorful.Hex(conf.Get("background_color"))
+  if err != nil {
+    panic(err)
+  }
   backgroundImg := imaging.New(1366, 768, backgroundColor)
 
   var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -110,18 +92,5 @@ func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int,
   newBackgroundImg := imaging.New(1366, 768, color.White)
   newBackgroundImg = imaging.Paste(newBackgroundImg, background, image.Pt(0, 0))
 
-
-  for y := 0; y < sprite.Bounds().Max.Y; y++ {
-    for x := 0; x < sprite.Bounds().Max.X; x++ {
-      tmpColor := sprite.At(x, y)
-      r, g, b, a := tmpColor.RGBA()
-      if r == 0 && g == 0 && b == 0 && a == 0 {
-        continue
-      } else {
-        newBackgroundImg.Set(xOrigin + int(xCircle) + x, yOrigin + int(yCircle) + y, tmpColor)
-      }
-    }
-  }
-
-  return newBackgroundImg
+  return pasteWithoutTransparentBackground(newBackgroundImg, sprite, xOrigin + int(xCircle), yOrigin + int(yCircle))
 }

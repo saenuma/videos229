@@ -55,6 +55,11 @@ background_color: #ffffff
 // sprite_file. A sprite is a unit of a pattern in imagery.
 sprite_file:
 
+// method. The method are in numbers. Allowed values are 1, 2.
+// 1: for rotation style
+// 2: for wave movement style
+method: 1
+
   	`
 		configFileName := "s" + time.Now().Format("20060102T150405") + ".zconf"
 		writePath := filepath.Join(rootPath, configFileName)
@@ -73,7 +78,36 @@ sprite_file:
 
 
   case "run":
-    outName := method1(os.Args)
+    rootPath, _ := GetRootPath()
+
+    if len(os.Args) != 3 {
+      color2.Red.Println("The run command expects a file created by the init command")
+      os.Exit(1)
+    }
+
+    confPath := filepath.Join(rootPath, os.Args[2])
+
+    conf, err := zazabul.LoadConfigFile(confPath)
+    if err != nil {
+      panic(err)
+      os.Exit(1)
+    }
+
+    for _, item := range conf.Items {
+      if item.Value == "" {
+        color2.Red.Println("Every field in the launch file is compulsory.")
+        os.Exit(1)
+      }
+    }
+
+
+    var outName string
+    if conf.Get("method") == "1" {
+      outName = method1(conf)
+    } else if conf.Get("method") == "2" {
+      outName = method2(conf)
+    }
+
     fmt.Println("Finished generating frames.")
 
     begin := os.Getenv("SNAP")
