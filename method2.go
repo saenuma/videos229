@@ -39,7 +39,7 @@ func method2(conf zazabul.Config) string {
   // var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 
-  var increment uint8 = 10
+  var increment uint8 = 2
   var transparency  uint8 = 255
   for seconds := 0; seconds < 60; seconds++ {
 
@@ -48,7 +48,7 @@ func method2(conf zazabul.Config) string {
       outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
 
       transparency -= increment
-      if transparency == 0 {
+      if transparency <= 0 {
         transparency = 255
       }
       toWriteImage := makePattern(backgroundImg, spriteImg, transparency)
