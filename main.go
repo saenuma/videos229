@@ -37,7 +37,7 @@ Directory Commands:
 
 Main Commands:
   init    Creates a config file describing your video. Edit to your own requirements.
-          The file from init is expected for trun and frun.
+          The file from init is expected the 'run' command.
 
   run     Renders a project with the config created above. It expects a config file (created from 'init' above)
           run would generate an mp4 video.
