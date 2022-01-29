@@ -14,6 +14,8 @@ import (
   "strconv"
   "math"
   "github.com/lucasb-eyer/go-colorful"
+  "runtime"
+  "sync"
 )
 
 
@@ -42,7 +44,39 @@ func method2(conf zazabul.Config) string {
   var increment uint8 = 2
   var transparency  uint8 = 255
   totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
-  for seconds := 0; seconds < totalSeconds; seconds++ {
+  numberOfCPUS := runtime.NumCPU()
+  jobsPerThread := int(math.Floor(float64(totalSeconds) / float64(numberOfCPUS)))
+  var wg sync.WaitGroup
+
+  for threadIndex := 0; threadIndex < numberOfCPUS; threadIndex++ {
+    wg.Add(1)
+
+    startSeconds :=   threadIndex * jobsPerThread
+    endSeconds := (threadIndex + 1) * jobsPerThread
+
+    go func(startSeconds, endSeconds int, wg *sync.WaitGroup) {
+      defer wg.Done()
+
+      for seconds := startSeconds; seconds < endSeconds; seconds++ {
+        for i := 1; i <= 60; i++ {
+          out := (60 * seconds) + i
+          outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
+
+          transparency -= increment
+          if transparency <= 0 {
+            transparency = 255
+          }
+          toWriteImage := makePattern(backgroundImg, spriteImg, transparency)
+          imaging.Save(toWriteImage, outPath)
+        }
+      }
+
+    }(startSeconds, endSeconds, &wg)
+  }
+  wg.Wait()
+
+
+  for seconds := (jobsPerThread * numberOfCPUS); seconds < totalSeconds; seconds++ {
 
     for i := 1; i <= 60; i++ {
       out := (60 * seconds) + i
