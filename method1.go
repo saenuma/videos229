@@ -58,8 +58,7 @@ func method1(conf zazabul.Config) string {
   yOrigin5 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
   xOrigin6 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
   yOrigin6 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-  var tinyAngle float64
-  var angleIncrement float64 = float64(0.5)
+  var angleIncrement float64 = float64(2)
 
   for threadIndex := 0; threadIndex < numberOfCPUS; threadIndex++ {
     wg.Add(1)
@@ -69,6 +68,7 @@ func method1(conf zazabul.Config) string {
 
     go func(startSeconds, endSeconds int, wg *sync.WaitGroup) {
       defer wg.Done()
+      var tinyAngle float64
 
       for seconds := startSeconds; seconds < endSeconds; seconds++ {
         for i := 1; i <= 60; i++ {
@@ -90,6 +90,8 @@ func method1(conf zazabul.Config) string {
     }(startSeconds, endSeconds, &wg)
   }
   wg.Wait()
+
+  var tinyAngle float64
 
   for seconds := (jobsPerThread * numberOfCPUS); seconds < totalSeconds; seconds++ {
     for i := 1; i <= 60; i++ {
