@@ -41,7 +41,8 @@ func method2(conf zazabul.Config) string {
 
   var increment uint8 = 2
   var transparency  uint8 = 255
-  for seconds := 0; seconds < 60; seconds++ {
+  totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+  for seconds := 0; seconds < totalSeconds; seconds++ {
 
     for i := 1; i <= 60; i++ {
       out := (60 * seconds) + i

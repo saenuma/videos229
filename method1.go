@@ -53,7 +53,8 @@ func method1(conf zazabul.Config) string {
   var tinyAngle float64
   var angleIncrement float64 = float64(0.5)
 
-  for seconds := 0; seconds < 60; seconds++ {
+  totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+  for seconds := 0; seconds < totalSeconds; seconds++ {
 
     for i := 1; i <= 60; i++ {
       out := (60 * seconds) + i

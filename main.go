@@ -55,6 +55,9 @@ background_color: #ffffff
 // sprite_file. A sprite is a unit of a pattern in imagery.
 sprite_file:
 
+// video_length is the length of the output video in this format (mm:ss)
+video_length:
+
 // method. The method are in numbers. Allowed values are 1, 2.
 // 1: for rotation style
 // 2: for disappearing pattern style
