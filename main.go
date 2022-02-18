@@ -6,7 +6,7 @@ import (
   color2 "github.com/gookit/color"
   "time"
   "path/filepath"
-  "github.com/bankole7782/zazabul"
+  "github.com/saenuma/zazabul"
   "os/exec"
   "strings"
 )

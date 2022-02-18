@@ -4,7 +4,7 @@ import (
   "image"
   "image/color"
   "image/draw"
-  v229s "github.com/bankole7782/videos229/videos229_shared"
+  v229s "github.com/saenuma/videos229/videos229_shared"
 )
 
 

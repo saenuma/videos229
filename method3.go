@@ -5,7 +5,7 @@ import (
   // "fmt"
   "time"
   "path/filepath"
-  "github.com/bankole7782/zazabul"
+  "github.com/saenuma/zazabul"
   "github.com/disintegration/imaging"
   "image"
   "image/color"
