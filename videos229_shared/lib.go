@@ -6,9 +6,6 @@ import (
   "github.com/pkg/errors"
   "path/filepath"
   "strconv"
-  "image"
-  "image/color"
-  "image/draw"
 )
 
 
@@ -29,7 +26,7 @@ func GetRootPath() (string, error) {
 
 
 
-func timeFormatToSeconds(s string) int {
+func TimeFormatToSeconds(s string) int {
   // calculate total duration of the song
   parts := strings.Split(s, ":")
   minutesPartConverted, err := strconv.Atoi(parts[0])

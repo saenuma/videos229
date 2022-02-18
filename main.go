@@ -27,7 +27,7 @@ func main() {
 	switch os.Args[1] {
 	case "--help", "help", "h":
   		fmt.Println(`videos229 generates videos that could be used for the background of adverts
-and lyrics videos.
+and lyrics videos. The sprites subprogram uses sprites.
 
 The number of frames per seconds is 60. This is what this program uses.
 
