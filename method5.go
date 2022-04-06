@@ -46,10 +46,10 @@ func method5(conf zazabul.Config) string {
   for i := 0; i <= numberOfObjects; i++ {
     if int(math.Mod(float64(i), float64(2))) == 0 {
       newX := i * spriteImg.Bounds().Dx()
-      objectsState = append(objectsState, image.Pt(newX, displacement))
+      objectsState = append(objectsState, image.Pt(newX, displacement - spriteImg.Bounds().Dy()))
     } else {
       newX := i * spriteImg.Bounds().Dx()
-      objectsState = append(objectsState, image.Pt(newX, -40))
+      objectsState = append(objectsState, image.Pt(newX, -40 - spriteImg.Bounds().Dy()))
     }
   }
 
@@ -114,18 +114,18 @@ func updateStateDownwards(backgroundImg, spriteImg image.Image, objectsState []i
   almostLastPt := objectsState[len(objectsState) - 2]
   lastPt := objectsState[len(objectsState) - 1]
 
-  truthValue3 := lastPt.Y > (spriteImg.Bounds().Dy() + 50)
-  truthValue4 := almostLastPt.Y > (spriteImg.Bounds().Dy() + 50)
+  truthValue3 := lastPt.Y > ( (spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + 10)
+  truthValue4 := almostLastPt.Y > ((spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + 10)
 
   if truthValue3 && truthValue4 {
     displacement := 10
     for i := 0; i <= numberOfObjects; i++ {
       if int(math.Mod(float64(i), float64(2))) == 0 {
         newX := i * spriteImg.Bounds().Dx()
-        objectsState = append(objectsState, image.Pt(newX, displacement))
+        objectsState = append(objectsState, image.Pt(newX, displacement - spriteImg.Bounds().Dy()))
       } else {
         newX := i * spriteImg.Bounds().Dx()
-        objectsState = append(objectsState, image.Pt(newX, -40))
+        objectsState = append(objectsState, image.Pt(newX, -40 - spriteImg.Bounds().Dy()))
       }
     }
   }
