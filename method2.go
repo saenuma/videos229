@@ -2,12 +2,10 @@ package main
 
 import (
   "os"
-  // "fmt"
   "time"
   "path/filepath"
   "github.com/saenuma/zazabul"
   "github.com/disintegration/imaging"
-  // "math/rand"
   "image"
   "image/color"
   "image/draw"
@@ -37,9 +35,6 @@ func method2(conf zazabul.Config) string {
     panic(err)
   }
   backgroundImg := imaging.New(1366, 768, backgroundColor)
-
-  // var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-
 
   var increment uint8 = 2
   totalSeconds := timeFormatToSeconds(conf.Get("video_length"))

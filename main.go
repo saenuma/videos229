@@ -58,10 +58,11 @@ sprite_file:
 // video_length is the length of the output video in this format (mm:ss)
 video_length:
 
-// method. The method are in numbers. Allowed values are 1, 2, 3.
+// method. The method are in numbers. Allowed values are 1, 2, 3, 4.
 // 1: for movement around a circle style
 // 2: for disappearing pattern style
 // 3: for rotation in place style
+// 4: for upward movement
 method: 1
 
   	`
@@ -112,6 +113,8 @@ method: 1
       outName = method2(conf)
     } else if conf.Get("method") == "3" {
       outName = method3(conf)
+    } else if conf.Get("method") == "4" {
+      outName = method4(conf)
     } else {
       color2.Red.Println("The method code is invalid.")
       os.Exit(1)
