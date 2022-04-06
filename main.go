@@ -63,6 +63,7 @@ video_length:
 // 2: for disappearing pattern style
 // 3: for rotation in place style
 // 4: for upward movement
+// 5: for downward movement
 method: 1
 
   	`
@@ -115,6 +116,8 @@ method: 1
       outName = method3(conf)
     } else if conf.Get("method") == "4" {
       outName = method4(conf)
+    } else if conf.Get("method") == "5" {
+      outName = method5(conf)
     } else {
       color2.Red.Println("The method code is invalid.")
       os.Exit(1)
