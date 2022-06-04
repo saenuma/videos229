@@ -1,14 +1,14 @@
-package main
+package sprites
 
 import (
   "os"
+  // "fmt"
   "time"
   "path/filepath"
   "github.com/saenuma/zazabul"
   "github.com/disintegration/imaging"
   "image"
   "image/color"
-  "image/draw"
   "strconv"
   "math"
   "github.com/lucasb-eyer/go-colorful"
@@ -18,7 +18,7 @@ import (
 
 
 // method1 generates a video with the sprite dancing round a circle
-func method2(conf zazabul.Config) string {
+func Method3(conf zazabul.Config) string {
   rootPath, _ := GetRootPath()
 
   outName := "s" + time.Now().Format("20060102T150405")
@@ -36,7 +36,10 @@ func method2(conf zazabul.Config) string {
   }
   backgroundImg := imaging.New(1366, 768, backgroundColor)
 
-  var increment uint8 = 2
+  // var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+
+  increment := 2.0
   totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
   numberOfCPUS := runtime.NumCPU()
   jobsPerThread := int(math.Floor(float64(totalSeconds) / float64(numberOfCPUS)))
@@ -50,18 +53,15 @@ func method2(conf zazabul.Config) string {
 
     go func(startSeconds, endSeconds int, wg *sync.WaitGroup) {
       defer wg.Done()
-      var transparency  uint8 = 255
+      var rotationAngle float64
 
       for seconds := startSeconds; seconds < endSeconds; seconds++ {
         for i := 1; i <= 60; i++ {
           out := (60 * seconds) + i
           outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
 
-          transparency -= increment
-          if transparency <= 0 {
-            transparency = 255
-          }
-          toWriteImage := makePattern(backgroundImg, spriteImg, transparency)
+          rotationAngle += increment
+          toWriteImage := makePatternWithRotations(backgroundImg, spriteImg, rotationAngle, backgroundColor)
           imaging.Save(toWriteImage, outPath)
         }
       }
@@ -71,18 +71,16 @@ func method2(conf zazabul.Config) string {
   wg.Wait()
 
 
-  var transparency  uint8 = 255
+  var rotationAngle float64
   for seconds := (jobsPerThread * numberOfCPUS); seconds < totalSeconds; seconds++ {
 
     for i := 1; i <= 60; i++ {
       out := (60 * seconds) + i
       outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
 
-      transparency -= increment
-      if transparency <= 0 {
-        transparency = 255
-      }
-      toWriteImage := makePattern(backgroundImg, spriteImg, transparency)
+      rotationAngle += increment
+
+      toWriteImage := makePatternWithRotations(backgroundImg, spriteImg, rotationAngle, backgroundColor)
       imaging.Save(toWriteImage, outPath)
     }
 
@@ -92,7 +90,7 @@ func method2(conf zazabul.Config) string {
   return outName
 }
 
-func makePattern(backgroundImg, spriteImg image.Image, transparency uint8) *image.NRGBA {
+func makePatternWithRotations(backgroundImg, spriteImg image.Image, rotationAngle float64, bgColor color.Color) *image.NRGBA {
   numberOfXIterations := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx() )
   numberOfYIternations := int(backgroundImg.Bounds().Dy() / spriteImg.Bounds().Dy())
 
@@ -105,7 +103,8 @@ func makePattern(backgroundImg, spriteImg image.Image, transparency uint8) *imag
       newY := y * spriteImg.Bounds().Dy()
 
       if int(math.Mod(float64(x), float64(2))) == 0 {
-        newBackgroundImg = pasteWithoutTransparentBackground2(newBackgroundImg, spriteImg, newX, newY, transparency)
+        rotatedSpriteImage := imaging.Rotate(spriteImg, rotationAngle, bgColor)
+        newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, rotatedSpriteImage, newX, newY)
       } else {
         newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, spriteImg, newX, newY)
       }
@@ -113,16 +112,4 @@ func makePattern(backgroundImg, spriteImg image.Image, transparency uint8) *imag
   }
 
   return newBackgroundImg
-}
-
-
-
-func pasteWithoutTransparentBackground2(backgroundImg *image.NRGBA, spriteImg image.Image, xOrigin, yOrigin int, transparency uint8) *image.NRGBA {
-
-  newRectangle := image.Rect(xOrigin, yOrigin, xOrigin + spriteImg.Bounds().Dx(), yOrigin + spriteImg.Bounds().Dy())
-  draw.DrawMask(backgroundImg, newRectangle, spriteImg, image.Pt(0,0),
-    image.NewUniform(color.RGBA{255, 255, 255, uint8(transparency) }), image.Pt(0,0),
-    draw.Over)
-
-  return backgroundImg
 }

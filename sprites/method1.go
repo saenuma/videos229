@@ -1,4 +1,4 @@
-package main
+package sprites
 
 import (
   "os"
@@ -19,7 +19,7 @@ import (
 
 
 // method1 generates a video with the sprite dancing round a circle
-func method1(conf zazabul.Config) string {
+func Method1(conf zazabul.Config) string {
   rootPath, _ := GetRootPath()
 
   outName := "s" + time.Now().Format("20060102T150405")

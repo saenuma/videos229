@@ -1,4 +1,4 @@
-package main
+package sprites
 
 import (
   "os"
@@ -9,7 +9,7 @@ import (
   "github.com/disintegration/imaging"
   // "math/rand"
   "image"
-  "image/color"
+  // "image/color"
   "strconv"
   "math"
   "github.com/lucasb-eyer/go-colorful"
@@ -18,8 +18,8 @@ import (
 )
 
 
-// method4 generates a video with the sprite moving upwards
-func method4(conf zazabul.Config) string {
+// method4 generates a video with the sprite moving downwards
+func Method5(conf zazabul.Config) string {
   rootPath, _ := GetRootPath()
 
   outName := "s" + time.Now().Format("20060102T150405")
@@ -42,14 +42,14 @@ func method4(conf zazabul.Config) string {
 
   // load up sprites locations into objectsState
   objectsState := make([]image.Point, 0)
-  displacement := 100
+  displacement := 10
   for i := 0; i <= numberOfObjects; i++ {
     if int(math.Mod(float64(i), float64(2))) == 0 {
       newX := i * spriteImg.Bounds().Dx()
-      objectsState = append(objectsState, image.Pt(newX, backgroundImg.Bounds().Dy() - displacement))
+      objectsState = append(objectsState, image.Pt(newX, displacement - spriteImg.Bounds().Dy()))
     } else {
       newX := i * spriteImg.Bounds().Dx()
-      objectsState = append(objectsState, image.Pt(newX, backgroundImg.Bounds().Dy()))
+      objectsState = append(objectsState, image.Pt(newX, -40 - spriteImg.Bounds().Dy()))
     }
   }
 
@@ -74,7 +74,7 @@ func method4(conf zazabul.Config) string {
 
           toWriteImage := writeCurrentState(backgroundImg, spriteImg, objectsState)
           // update state
-          objectsState = updateStateUpwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
+          objectsState = updateStateDownwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
           imaging.Save(toWriteImage, outPath)
         }
 
@@ -92,7 +92,7 @@ func method4(conf zazabul.Config) string {
 
       toWriteImage := writeCurrentState(backgroundImg, spriteImg, objectsState)
       // update state
-      objectsState = updateStateUpwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
+      objectsState = updateStateDownwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
       imaging.Save(toWriteImage, outPath)
     }
   }
@@ -102,22 +102,11 @@ func method4(conf zazabul.Config) string {
 }
 
 
-func writeCurrentState(backgroundImg, spriteImg image.Image, objectsState []image.Point) *image.NRGBA {
-  newBackgroundImg := imaging.New(1366, 768, color.White)
-  newBackgroundImg = imaging.Paste(newBackgroundImg, backgroundImg, image.Pt(0, 0))
-
-  for _, point := range objectsState {
-    newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, spriteImg, point.X, point.Y)
-  }
-  return newBackgroundImg
-}
-
-
-func updateStateUpwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, numberOfObjects int) []image.Point {
+func updateStateDownwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, numberOfObjects int) []image.Point {
   displacement2 := 10
 
   for i, point := range objectsState {
-    newPoint := image.Pt( point.X, point.Y - displacement2)
+    newPoint := image.Pt( point.X, point.Y + displacement2)
     objectsState[i] = newPoint
   }
 
@@ -125,19 +114,18 @@ func updateStateUpwards(backgroundImg, spriteImg image.Image, objectsState []ima
   almostLastPt := objectsState[len(objectsState) - 2]
   lastPt := objectsState[len(objectsState) - 1]
 
-  truthValue3 := lastPt.Y + spriteImg.Bounds().Dy() < backgroundImg.Bounds().Dy()
-  truthValue4 := almostLastPt.Y + spriteImg.Bounds().Dy() < backgroundImg.Bounds().Dy()
+  truthValue3 := lastPt.Y > ( (spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + 10)
+  truthValue4 := almostLastPt.Y > ((spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + 10)
 
   if truthValue3 && truthValue4 {
-    // load up sprites locations into objectsState
-    displacement := 100
+    displacement := 10
     for i := 0; i <= numberOfObjects; i++ {
       if int(math.Mod(float64(i), float64(2))) == 0 {
         newX := i * spriteImg.Bounds().Dx()
-        objectsState = append(objectsState, image.Pt(newX, backgroundImg.Bounds().Dy() - displacement + 50))
+        objectsState = append(objectsState, image.Pt(newX, displacement - spriteImg.Bounds().Dy()))
       } else {
         newX := i * spriteImg.Bounds().Dx()
-        objectsState = append(objectsState, image.Pt(newX, backgroundImg.Bounds().Dy() + 50))
+        objectsState = append(objectsState, image.Pt(newX, -40 - spriteImg.Bounds().Dy()))
       }
     }
   }
@@ -146,8 +134,8 @@ func updateStateUpwards(backgroundImg, spriteImg image.Image, objectsState []ima
     // remove top objects if necessary
     firstPt := objectsState[0]
     secondPt := objectsState[1]
-    truthValue1 := firstPt.Y + spriteImg.Bounds().Dy() <= 0
-    truthValue2 := secondPt.Y + spriteImg.Bounds().Dy() <= 0
+    truthValue1 := firstPt.Y + spriteImg.Bounds().Dy() > backgroundImg.Bounds().Dy()
+    truthValue2 := secondPt.Y + spriteImg.Bounds().Dy() > backgroundImg.Bounds().Dy()
     if truthValue1 || truthValue2 {
       objectsState = append(objectsState[:numberOfObjects], objectsState[numberOfObjects+1:]...)
     }
