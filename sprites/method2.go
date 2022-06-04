@@ -14,6 +14,7 @@ import (
   "github.com/lucasb-eyer/go-colorful"
   "runtime"
   "sync"
+  color2 "github.com/gookit/color"
 )
 
 
@@ -27,13 +28,16 @@ func Method2(conf zazabul.Config) string {
 
   spriteImg, err := imaging.Open(filepath.Join(rootPath, conf.Get("sprite_file")))
   if err != nil {
-    panic(err)
+    color2.Printf("The sprite file '%s' does not exist.\n Exiting.\n", filepath.Join(rootPath, conf.Get("sprite_file")))
+    os.Exit(1)
   }
 
   backgroundColor, err := colorful.Hex(conf.Get("background_color"))
   if err != nil {
-    panic(err)
+    color2.Printf("The color code '%s' is not valid.\nExiting.\n", conf.Get("background_color"))
+    os.Exit(1)
   }
+
   backgroundImg := imaging.New(1366, 768, backgroundColor)
 
   var increment uint8 = 2

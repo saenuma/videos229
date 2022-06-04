@@ -40,3 +40,11 @@ func TimeFormatToSeconds(s string) int {
   totalSecondsOfSong := (60 * minutesPartConverted) + secondsPartConverted
   return totalSecondsOfSong
 }
+
+
+func DoesPathExists(p string) bool {
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
