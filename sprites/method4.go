@@ -29,13 +29,13 @@ func Method4(conf zazabul.Config) string {
 
   spriteImg, err := imaging.Open(filepath.Join(rootPath, conf.Get("sprite_file")))
   if err != nil {
-    color2.Printf("The sprite file '%s' does not exist.\n Exiting.\n", filepath.Join(rootPath, conf.Get("sprite_file")))
+    color2.Red.Printf("The sprite file '%s' does not exist.\n Exiting.\n", filepath.Join(rootPath, conf.Get("sprite_file")))
     os.Exit(1)
   }
 
   backgroundColor, err := colorful.Hex(conf.Get("background_color"))
   if err != nil {
-    color2.Printf("The color code '%s' is not valid.\nExiting.\n", conf.Get("background_color"))
+    color2.Red.Printf("The color code '%s' is not valid.\nExiting.\n", conf.Get("background_color"))
     os.Exit(1)
   }
 

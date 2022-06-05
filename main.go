@@ -10,6 +10,7 @@ import (
   "os/exec"
   "strings"
   "github.com/saenuma/videos229/sprites"
+  "github.com/saenuma/videos229/slideshow"
   v229s "github.com/saenuma/videos229/videos229_shared"
 )
 
@@ -92,7 +93,8 @@ method: 1
 background_color: #ffffff
 
 // The directory containing the pictures for a slideshow. It must be stored in the working directory
-// of videos229
+// of videos229.
+// All pictures here must be of width 1366px and height 768px
 pictures_dir:
 
 // video_length is the length of the output video in this format (mm:ss)
@@ -158,6 +160,10 @@ method: 1
         os.Exit(1)
       }
 
+    } else if conf.Get("pictures_dir") != "" {
+      if conf.Get("method") == "1" {
+        outName = slideshow.Method1(conf)
+      }
     }
 
     fmt.Println("Finished generating frames.")
