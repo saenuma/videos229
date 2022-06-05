@@ -101,7 +101,8 @@ pictures_dir:
 video_length:
 
 // method. The method are in numbers. Allowed values are 1
-// 1: for basic slideshow
+// 1: for immediate appearance slideshow
+// 2: for fade in slideshow
 method: 1
 
   	`
@@ -163,6 +164,8 @@ method: 1
     } else if conf.Get("pictures_dir") != "" {
       if conf.Get("method") == "1" {
         outName = slideshow.Method1(conf)
+      } else if conf.Get("method") == "2" {
+        outName = slideshow.Method2(conf)
       }
     }
 

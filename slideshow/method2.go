@@ -7,6 +7,8 @@ import (
   "github.com/saenuma/zazabul"
   "github.com/disintegration/imaging"
   "image"
+  "image/color"
+  "image/draw"
   "strconv"
   "math"
   "sync"
@@ -15,7 +17,7 @@ import (
 )
 
 
-func Method1(conf zazabul.Config) string {
+func Method2(conf zazabul.Config) string {
   rootPath, _ := v229s.GetRootPath()
 
   outName := "s" + time.Now().Format("20060102T150405")
@@ -46,9 +48,6 @@ func Method1(conf zazabul.Config) string {
     picsPaths = append(picsPaths, aPicPath)
   }
 
-  // var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-
-
   var wg sync.WaitGroup
 
   switchFrequency := 15 // seconds
@@ -69,13 +68,19 @@ func Method1(conf zazabul.Config) string {
     go func(startSeconds, endSeconds, currentIndex int, wg *sync.WaitGroup) {
       defer wg.Done()
 
-
       for seconds := startSeconds; seconds < endSeconds; seconds++ {
         for i := 1; i <= 60; i++ {
           out := (60 * seconds) + i
           outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
+          increment := float64(255) / float64(60)
+          if seconds == startSeconds {
+            currentTranspancy := int( math.Floor(float64(i) * increment) )
+            imageInMaking := pasteTransparentImage(currentIndex, lengthOfPics, &picsBytes, currentTranspancy)
+            imaging.Save(imageInMaking, outPath)
+          } else {
+            imaging.Save(picsBytes[currentIndex], outPath)
+          }
 
-          imaging.Save(picsBytes[currentIndex], outPath)
         }
       }
 
@@ -84,20 +89,46 @@ func Method1(conf zazabul.Config) string {
   wg.Wait()
 
 
+
   for seconds := (totalThreads * switchFrequency); seconds < totalSeconds; seconds++ {
     lengthOfPics := len(picsPaths)
     currentIndexF64 := math.Mod(float64(1+(totalThreads*switchFrequency)), float64(lengthOfPics))
     currentIndex := int(currentIndexF64)
+    startSeconds := totalThreads * switchFrequency
 
     for i := 1; i <= 60; i++ {
       out := (60 * seconds) + i
       outPath := filepath.Join(renderPath, strconv.Itoa(out) + ".png")
 
-      imaging.Save(picsBytes[currentIndex], outPath)
+      increment := float64(255) / float64(120)
+      if seconds == startSeconds {
+        currentTranspancy := int( math.Floor(float64(i) * increment) )
+        imageInMaking := pasteTransparentImage(currentIndex, lengthOfPics, &picsBytes, currentTranspancy)
+        imaging.Save(imageInMaking, outPath)
+      } else {
+        imaging.Save(picsBytes[currentIndex], outPath)
+      }
     }
 
   }
 
   return outName
 
+}
+
+
+func pasteTransparentImage(currentIndex, lengthOfPics int, picsBytes *map[int]image.Image, transparency int ) *image.NRGBA {
+  oldPicIndex := currentIndex - 1
+  if currentIndex == 0 {
+    oldPicIndex = lengthOfPics - 1
+  }
+  newBackgroundImg := imaging.New(1366, 768, color.White)
+
+  imageInMaking := imaging.Paste(newBackgroundImg, (*picsBytes)[oldPicIndex], image.Pt(0,0))
+
+  draw.DrawMask(imageInMaking, imageInMaking.Bounds(), (*picsBytes)[currentIndex], image.Pt(0,0),
+    image.NewUniform(color.RGBA{255, 255, 255, uint8(transparency) }), image.Pt(0,0),
+    draw.Over)
+
+  return imageInMaking
 }
