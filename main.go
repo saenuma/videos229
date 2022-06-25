@@ -9,10 +9,16 @@ import (
   "github.com/saenuma/zazabul"
   "os/exec"
   "strings"
+  "runtime"
+  "io"
+  "net/http"
   "github.com/saenuma/videos229/sprites"
   "github.com/saenuma/videos229/slideshow"
   v229s "github.com/saenuma/videos229/videos229_shared"
 )
+
+
+const VersionFormat = "20060102T150405MST"
 
 func main() {
   rootPath, err := v229s.GetRootPath()
@@ -26,6 +32,40 @@ func main() {
 		os.Exit(1)
 	}
 
+  if runtime.GOOS == "windows" {
+    newVersionStr := ""
+    resp, err := http.Get("https://sae.ng/static/wapps/videos229.txt")
+    if err != nil {
+      fmt.Println(err)
+    }
+    if err == nil {
+      defer resp.Body.Close()
+      body, err := io.ReadAll(resp.Body)
+      if err == nil && resp.StatusCode == 200 {
+        newVersionStr = string(body)
+      }
+    }
+
+    newVersionStr = strings.TrimSpace(newVersionStr)
+    currentVersionStr = strings.TrimSpace(currentVersionStr)
+
+    hnv := false
+    if newVersionStr != "" && newVersionStr != currentVersionStr {
+      time1, err1 := time.Parse(VersionFormat, newVersionStr)
+      time2, err2 := time.Parse(VersionFormat, currentVersionStr)
+
+      if err1 == nil && err2 == nil && time2.Before(time1) {
+        hnv = true
+      }
+    }
+
+    if hnv == true {
+      fmt.Println("videos229 has an update.")
+      fmt.Println("please visit 'https://sae.ng/videos229' for update instructions." )
+      fmt.Println()
+    }
+
+  }
 
 	switch os.Args[1] {
 	case "--help", "help", "h":
@@ -171,13 +211,10 @@ method: 1
 
     fmt.Println("Finished generating frames.")
 
-    begin := os.Getenv("SNAP")
-    command := "ffmpeg"
-    if begin != "" && ! strings.HasPrefix(begin, "/snap/go/") {
-      command = filepath.Join(begin, "bin", "ffmpeg")
-    }
+    command := v229s.GetFFMPEGCommand()
 
     out, err := exec.Command(command, "-framerate", "60", "-i", filepath.Join(rootPath, outName, "%d.png"),
+      "-pix_fmt",  "yuv420p",
       filepath.Join(rootPath, outName + ".mp4")).CombinedOutput()
     if err != nil {
       fmt.Println(string(out))
