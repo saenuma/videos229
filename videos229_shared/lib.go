@@ -1,43 +1,43 @@
 package videos229_shared
 
 import (
-  "os"
-  "strings"
-  "github.com/pkg/errors"
-  "path/filepath"
-  "strconv"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/pkg/errors"
 )
-
-
 
 func GetRootPath() (string, error) {
 	hd, err := os.UserHomeDir()
 	if err != nil {
 		return "", errors.Wrap(err, "os error")
 	}
-  dd := filepath.Join(hd, "Videos229")
-  os.MkdirAll(dd, 0777)
+
+	dd := os.Getenv("SNAP_USER_COMMON")
+	if strings.HasPrefix(dd, filepath.Join(hd, "snap", "go")) || dd == "" {
+		dd = filepath.Join(hd, "Videos229")
+		os.MkdirAll(dd, 0777)
+	}
 
 	return dd, nil
 }
 
-
-
 func TimeFormatToSeconds(s string) int {
-  // calculate total duration of the song
-  parts := strings.Split(s, ":")
-  minutesPartConverted, err := strconv.Atoi(parts[0])
-  if err != nil {
-    panic(err)
-  }
-  secondsPartConverted, err := strconv.Atoi(parts[1])
-  if err != nil {
-    panic(err)
-  }
-  totalSecondsOfSong := (60 * minutesPartConverted) + secondsPartConverted
-  return totalSecondsOfSong
+	// calculate total duration of the song
+	parts := strings.Split(s, ":")
+	minutesPartConverted, err := strconv.Atoi(parts[0])
+	if err != nil {
+		panic(err)
+	}
+	secondsPartConverted, err := strconv.Atoi(parts[1])
+	if err != nil {
+		panic(err)
+	}
+	totalSecondsOfSong := (60 * minutesPartConverted) + secondsPartConverted
+	return totalSecondsOfSong
 }
-
 
 func DoesPathExists(p string) bool {
 	if _, err := os.Stat(p); os.IsNotExist(err) {
@@ -46,19 +46,18 @@ func DoesPathExists(p string) bool {
 	return true
 }
 
-
 func GetFFMPEGCommand() string {
-  // get the right ffmpeg command
-  homeDir, err := os.UserHomeDir()
-  if err != nil {
-    panic(err)
-  }
+	// get the right ffmpeg command
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
 
-  devPath := filepath.Join(homeDir, "bin", "ffmpeg.exe")
-  bundledPath := filepath.Join("C:\\Program Files (x86)\\Videos229", "ffmpeg.exe")
-  if DoesPathExists(devPath) {
-    return devPath
-  }
+	devPath := filepath.Join(homeDir, "bin", "ffmpeg.exe")
+	bundledPath := filepath.Join("C:\\Program Files (x86)\\Videos229", "ffmpeg.exe")
+	if DoesPathExists(devPath) {
+		return devPath
+	}
 
-  return bundledPath
+	return bundledPath
 }
