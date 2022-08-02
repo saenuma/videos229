@@ -1,75 +1,74 @@
 package main
 
 import (
-  "os"
-  "fmt"
-  color2 "github.com/gookit/color"
-  "time"
-  "path/filepath"
-  "github.com/saenuma/zazabul"
-  "os/exec"
-  "strings"
-  "runtime"
-  "io"
-  "net/http"
-  "github.com/saenuma/videos229/sprites"
-  "github.com/saenuma/videos229/slideshow"
-  v229s "github.com/saenuma/videos229/videos229_shared"
-)
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"time"
 
+	color2 "github.com/gookit/color"
+	"github.com/saenuma/videos229/slideshow"
+	"github.com/saenuma/videos229/sprites"
+	v229s "github.com/saenuma/videos229/videos229_shared"
+	"github.com/saenuma/zazabul"
+)
 
 const VersionFormat = "20060102T150405MST"
 
 func main() {
-  rootPath, err := v229s.GetRootPath()
-  if err != nil {
-    panic(err)
-    os.Exit(1)
-  }
+	rootPath, err := v229s.GetRootPath()
+	if err != nil {
+		panic(err)
+	}
 
-  if len(os.Args) < 2 {
+	if len(os.Args) < 2 {
 		color2.Red.Println("Expecting a command. Run with help subcommand to view help.")
 		os.Exit(1)
 	}
 
-  if runtime.GOOS == "windows" {
-    newVersionStr := ""
-    resp, err := http.Get("https://sae.ng/static/wapps/videos229.txt")
-    if err != nil {
-      fmt.Println(err)
-    }
-    if err == nil {
-      defer resp.Body.Close()
-      body, err := io.ReadAll(resp.Body)
-      if err == nil && resp.StatusCode == 200 {
-        newVersionStr = string(body)
-      }
-    }
+	if runtime.GOOS == "windows" {
+		newVersionStr := ""
+		resp, err := http.Get("https://sae.ng/static/wapps/videos229.txt")
+		if err != nil {
+			fmt.Println(err)
+		}
+		if err == nil {
+			defer resp.Body.Close()
+			body, err := io.ReadAll(resp.Body)
+			if err == nil && resp.StatusCode == 200 {
+				newVersionStr = string(body)
+			}
+		}
 
-    newVersionStr = strings.TrimSpace(newVersionStr)
-    currentVersionStr = strings.TrimSpace(currentVersionStr)
+		newVersionStr = strings.TrimSpace(newVersionStr)
+		currentVersionStr = strings.TrimSpace(currentVersionStr)
 
-    hnv := false
-    if newVersionStr != "" && newVersionStr != currentVersionStr {
-      time1, err1 := time.Parse(VersionFormat, newVersionStr)
-      time2, err2 := time.Parse(VersionFormat, currentVersionStr)
+		hnv := false
+		if newVersionStr != "" && newVersionStr != currentVersionStr {
+			time1, err1 := time.Parse(VersionFormat, newVersionStr)
+			time2, err2 := time.Parse(VersionFormat, currentVersionStr)
 
-      if err1 == nil && err2 == nil && time2.Before(time1) {
-        hnv = true
-      }
-    }
+			if err1 == nil && err2 == nil && time2.Before(time1) {
+				hnv = true
+			}
+		}
 
-    if hnv == true {
-      fmt.Println("videos229 has an update.")
-      fmt.Println("please visit 'https://sae.ng/videos229' for update instructions." )
-      fmt.Println()
-    }
+		if hnv {
+			fmt.Println("videos229 has an update.")
+			fmt.Println("please visit 'https://sae.ng/videos229' for update instructions.")
+			fmt.Println()
+		}
 
-  }
+	}
 
 	switch os.Args[1] {
 	case "--help", "help", "h":
-  		fmt.Println(`videos229 generates videos that could be used for the background of adverts
+		fmt.Println(`videos229 generates videos that could be used for the background of adverts
 and lyrics videos.
 
 Directory Commands:
@@ -93,8 +92,8 @@ Main Commands:
 	case "pwd":
 		fmt.Println(rootPath)
 
-  case "initsp":
-    var	tmplOfMethod1 = `// background_color is the color of the background image. Example is #af1382
+	case "initsp":
+		var tmplOfMethod1 = `// background_color is the color of the background image. Example is #af1382
 background_color: #ffffff
 
 // sprite_file. A sprite is a unit of a pattern in imagery.
@@ -116,20 +115,19 @@ method: 1
 		writePath := filepath.Join(rootPath, configFileName)
 
 		conf, err := zazabul.ParseConfig(tmplOfMethod1)
-    if err != nil {
-    	panic(err)
-    }
+		if err != nil {
+			panic(err)
+		}
 
-    err = conf.Write(writePath)
-    if err != nil {
-      panic(err)
-    }
+		err = conf.Write(writePath)
+		if err != nil {
+			panic(err)
+		}
 
-    fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
+		fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
-
-  case "initsl":
-    var	tmplOfMethod1 = `// background_color is the color of the background image. Example is #af1382
+	case "initsl":
+		var tmplOfMethod1 = `// background_color is the color of the background image. Example is #af1382
 background_color: #ffffff
 
 // The directory containing the pictures for a slideshow. It must be stored in the working directory
@@ -150,79 +148,78 @@ method: 1
 		writePath := filepath.Join(rootPath, configFileName)
 
 		conf, err := zazabul.ParseConfig(tmplOfMethod1)
-    if err != nil {
-    	panic(err)
-    }
+		if err != nil {
+			panic(err)
+		}
 
-    err = conf.Write(writePath)
-    if err != nil {
-      panic(err)
-    }
+		err = conf.Write(writePath)
+		if err != nil {
+			panic(err)
+		}
 
-    fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
+		fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
-  case "run":
-    rootPath, _ := v229s.GetRootPath()
+	case "run":
+		rootPath, _ := v229s.GetRootPath()
 
-    if len(os.Args) != 3 {
-      color2.Red.Println("The run command expects a file created by the init command")
-      os.Exit(1)
-    }
+		if len(os.Args) != 3 {
+			color2.Red.Println("The run command expects a file created by the init command")
+			os.Exit(1)
+		}
 
-    confPath := filepath.Join(rootPath, os.Args[2])
+		confPath := filepath.Join(rootPath, os.Args[2])
 
-    conf, err := zazabul.LoadConfigFile(confPath)
-    if err != nil {
-      panic(err)
-      os.Exit(1)
-    }
+		conf, err := zazabul.LoadConfigFile(confPath)
+		if err != nil {
+			panic(err)
+		}
 
-    for _, item := range conf.Items {
-      if item.Value == "" {
-        color2.Red.Println("Every field in the launch file is compulsory.")
-        os.Exit(1)
-      }
-    }
+		for _, item := range conf.Items {
+			if item.Value == "" {
+				color2.Red.Println("Every field in the launch file is compulsory.")
+				os.Exit(1)
+			}
+		}
 
-    var outName string
-    if conf.Get("sprite_file") != "" {
-      if conf.Get("method") == "1" {
-        outName = sprites.Method1(conf)
-      } else if conf.Get("method") == "2" {
-        outName = sprites.Method2(conf)
-      } else if conf.Get("method") == "3" {
-        outName = sprites.Method3(conf)
-      } else if conf.Get("method") == "4" {
-        outName = sprites.Method4(conf)
-      } else if conf.Get("method") == "5" {
-        outName = sprites.Method5(conf)
-      } else {
-        color2.Red.Println("The method code is invalid.")
-        os.Exit(1)
-      }
+		var outName string
+		if conf.Get("sprite_file") != "" {
+			if conf.Get("method") == "1" {
+				outName = sprites.Method1(conf)
+			} else if conf.Get("method") == "2" {
+				outName = sprites.Method2(conf)
+			} else if conf.Get("method") == "3" {
+				outName = sprites.Method3(conf)
+			} else if conf.Get("method") == "4" {
+				outName = sprites.Method4(conf)
+			} else if conf.Get("method") == "5" {
+				outName = sprites.Method5(conf)
+			} else {
+				color2.Red.Println("The method code is invalid.")
+				os.Exit(1)
+			}
 
-    } else if conf.Get("pictures_dir") != "" {
-      if conf.Get("method") == "1" {
-        outName = slideshow.Method1(conf)
-      } else if conf.Get("method") == "2" {
-        outName = slideshow.Method2(conf)
-      }
-    }
+		} else if conf.Get("pictures_dir") != "" {
+			if conf.Get("method") == "1" {
+				outName = slideshow.Method1(conf)
+			} else if conf.Get("method") == "2" {
+				outName = slideshow.Method2(conf)
+			}
+		}
 
-    fmt.Println("Finished generating frames.")
+		fmt.Println("Finished generating frames.")
 
-    command := v229s.GetFFMPEGCommand()
+		command := v229s.GetFFMPEGCommand()
 
-    out, err := exec.Command(command, "-framerate", "60", "-i", filepath.Join(rootPath, outName, "%d.png"),
-      "-pix_fmt",  "yuv420p",
-      filepath.Join(rootPath, outName + ".mp4")).CombinedOutput()
-    if err != nil {
-      fmt.Println(string(out))
-      panic(err)
-    }
+		out, err := exec.Command(command, "-framerate", "60", "-i", filepath.Join(rootPath, outName, "%d.png"),
+			"-pix_fmt", "yuv420p",
+			filepath.Join(rootPath, outName+".mp4")).CombinedOutput()
+		if err != nil {
+			fmt.Println(string(out))
+			panic(err)
+		}
 
-    os.RemoveAll(filepath.Join(rootPath, outName))
-    fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName + ".mp4"))
+		os.RemoveAll(filepath.Join(rootPath, outName))
+		fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName+".mp4"))
 
 	default:
 		color2.Red.Println("Unexpected command. Run the cli with --help to find out the supported commands.")
