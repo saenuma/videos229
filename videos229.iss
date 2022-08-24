@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Videos229"
-#define MyAppVersion "1.3.0"
+#define MyAppVersion "20220625T101047WAT"
 #define MyAppPublisher "Saenuma Digital Ltd"
 #define MyAppURL "https://sae.ng"
 #define MyAppExeName "videos229.exe"
@@ -21,10 +21,10 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\Bankole Ojo\p\videos229\LICENSE
+LicenseFile=C:\Users\banko\p\videos229\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\Bankole Ojo\p\videos229\bin
+OutputDir=C:\Users\banko\p\videos229\bin
 OutputBaseFilename=videos229_setup
 Compression=lzma
 SolidCompression=yes
@@ -34,8 +34,8 @@ WizardStyle=modern
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Users\Bankole Ojo\p\videos229\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Bankole Ojo\tt2\ffmpeg-5.0.1-essentials_build\bin\ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\banko\p\videos229\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\banko\bin\ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
