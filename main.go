@@ -2,13 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
-	"strings"
 	"time"
 
 	color2 "github.com/gookit/color"
@@ -29,41 +25,6 @@ func main() {
 	if len(os.Args) < 2 {
 		color2.Red.Println("Expecting a command. Run with help subcommand to view help.")
 		os.Exit(1)
-	}
-
-	if runtime.GOOS == "windows" {
-		newVersionStr := ""
-		resp, err := http.Get("https://sae.ng/static/wapps/videos229.txt")
-		if err != nil {
-			fmt.Println(err)
-		}
-		if err == nil {
-			defer resp.Body.Close()
-			body, err := io.ReadAll(resp.Body)
-			if err == nil && resp.StatusCode == 200 {
-				newVersionStr = string(body)
-			}
-		}
-
-		newVersionStr = strings.TrimSpace(newVersionStr)
-		currentVersionStr = strings.TrimSpace(currentVersionStr)
-
-		hnv := false
-		if newVersionStr != "" && newVersionStr != currentVersionStr {
-			time1, err1 := time.Parse(VersionFormat, newVersionStr)
-			time2, err2 := time.Parse(VersionFormat, currentVersionStr)
-
-			if err1 == nil && err2 == nil && time2.Before(time1) {
-				hnv = true
-			}
-		}
-
-		if hnv {
-			fmt.Println("videos229 has an update.")
-			fmt.Println("please visit 'https://sae.ng/videos229' for update instructions.")
-			fmt.Println()
-		}
-
 	}
 
 	switch os.Args[1] {
