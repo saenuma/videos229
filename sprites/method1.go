@@ -8,9 +8,7 @@ import (
 	"math"
 	"math/rand"
 	"path/filepath"
-	"runtime"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -23,7 +21,7 @@ import (
 func Method1(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
-	outName := "s" + time.Now().Format("20060102T150405")
+	outName := "sp_" + time.Now().Format("20060102T150405")
 	renderPath := filepath.Join(rootPath, outName)
 	os.MkdirAll(renderPath, 0777)
 
@@ -41,10 +39,6 @@ func Method1(conf zazabul.Config) string {
 	backgroundImg := imaging.New(1366, 768, backgroundColor)
 
 	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
-	numberOfCPUS := runtime.NumCPU()
-	jobsPerThread := int(math.Floor(float64(totalSeconds) / float64(numberOfCPUS)))
-
-	var wg sync.WaitGroup
 
 	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -55,48 +49,11 @@ func Method1(conf zazabul.Config) string {
 	yOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
 	xOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
 	yOrigin3 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-	xOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
-	yOrigin4 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-	xOrigin5 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
-	yOrigin5 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-	xOrigin6 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
-	yOrigin6 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
 	var angleIncrement float64 = float64(2)
-
-	for threadIndex := 0; threadIndex < numberOfCPUS; threadIndex++ {
-		wg.Add(1)
-
-		startSeconds := threadIndex * jobsPerThread
-		endSeconds := (threadIndex + 1) * jobsPerThread
-
-		go func(startSeconds, endSeconds int, wg *sync.WaitGroup) {
-			defer wg.Done()
-			var tinyAngle float64
-
-			for seconds := startSeconds; seconds < endSeconds; seconds++ {
-				for i := 1; i <= 60; i++ {
-					out := (24 * seconds) + i
-					outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
-
-					tinyAngle += angleIncrement
-
-					toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
-					toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
-					toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, 1)
-					toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, 2)
-					toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin5, yOrigin5, radius, tinyAngle, 1)
-					toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin6, yOrigin6, radius, tinyAngle, 2)
-					imaging.Save(toWriteImage, outPath)
-				}
-			}
-
-		}(startSeconds, endSeconds, &wg)
-	}
-	wg.Wait()
 
 	var tinyAngle float64
 
-	for seconds := (jobsPerThread * numberOfCPUS); seconds < totalSeconds; seconds++ {
+	for seconds := 0; seconds < totalSeconds; seconds++ {
 		for i := 1; i <= 60; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
@@ -106,9 +63,6 @@ func Method1(conf zazabul.Config) string {
 			toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
 			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
 			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin3, yOrigin3, radius, tinyAngle, 1)
-			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin4, yOrigin4, radius, tinyAngle, 2)
-			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin5, yOrigin5, radius, tinyAngle, 1)
-			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin6, yOrigin6, radius, tinyAngle, 2)
 			imaging.Save(toWriteImage, outPath)
 		}
 	}
