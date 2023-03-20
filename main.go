@@ -10,14 +10,14 @@ import (
 	color2 "github.com/gookit/color"
 	"github.com/saenuma/videos229/slideshow"
 	"github.com/saenuma/videos229/sprites"
-	v229s "github.com/saenuma/videos229/videos229_shared"
+	"github.com/saenuma/videos229/v2shared"
 	"github.com/saenuma/zazabul"
 )
 
 const VersionFormat = "20060102T150405MST"
 
 func main() {
-	rootPath, err := v229s.GetRootPath()
+	rootPath, err := v2shared.GetRootPath()
 	if err != nil {
 		panic(err)
 	}
@@ -121,7 +121,7 @@ method: 1
 		fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
 	case "run":
-		rootPath, _ := v229s.GetRootPath()
+		rootPath, _ := v2shared.GetRootPath()
 
 		if len(os.Args) != 3 {
 			color2.Red.Println("The run command expects a file created by the init command")
@@ -169,7 +169,7 @@ method: 1
 
 		fmt.Println("Finished generating frames.")
 
-		command := v229s.GetFFMPEGCommand()
+		command := v2shared.GetFFMPEGCommand()
 
 		out, err := exec.Command(command, "-framerate", "60", "-i", filepath.Join(rootPath, outName, "%d.png"),
 			"-pix_fmt", "yuv420p",

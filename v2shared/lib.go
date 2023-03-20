@@ -1,4 +1,4 @@
-package videos229_shared
+package v2shared
 
 import (
 	"os"
