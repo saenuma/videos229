@@ -70,7 +70,7 @@ func Method1(conf zazabul.Config) string {
 
 			for seconds := startSeconds; seconds < endSeconds; seconds++ {
 				for i := 1; i <= 60; i++ {
-					out := (60 * seconds) + i
+					out := (24 * seconds) + i
 					outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
 					imaging.Save(picsBytes[currentIndex], outPath)
@@ -87,7 +87,7 @@ func Method1(conf zazabul.Config) string {
 		currentIndex := int(currentIndexF64)
 
 		for i := 1; i <= 60; i++ {
-			out := (60 * seconds) + i
+			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
 			imaging.Save(picsBytes[currentIndex], outPath)

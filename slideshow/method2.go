@@ -70,7 +70,7 @@ func Method2(conf zazabul.Config) string {
 
 			for seconds := startSeconds; seconds < endSeconds; seconds++ {
 				for i := 1; i <= 60; i++ {
-					out := (60 * seconds) + i
+					out := (24 * seconds) + i
 					outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 					increment := float64(255) / float64(60)
 					if seconds == startSeconds {
@@ -95,7 +95,7 @@ func Method2(conf zazabul.Config) string {
 		startSeconds := totalThreads * switchFrequency
 
 		for i := 1; i <= 60; i++ {
-			out := (60 * seconds) + i
+			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
 			increment := float64(255) / float64(120)

@@ -35,7 +35,7 @@ func TimeFormatToSeconds(s string) int {
 	if err != nil {
 		panic(err)
 	}
-	totalSecondsOfSong := (60 * minutesPartConverted) + secondsPartConverted
+	totalSecondsOfSong := (24 * minutesPartConverted) + secondsPartConverted
 	return totalSecondsOfSong
 }
 

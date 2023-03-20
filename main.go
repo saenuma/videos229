@@ -171,7 +171,7 @@ method: 1
 
 		command := v2shared.GetFFMPEGCommand()
 
-		out, err := exec.Command(command, "-framerate", "60", "-i", filepath.Join(rootPath, outName, "%d.png"),
+		out, err := exec.Command(command, "-framerate", "24", "-i", filepath.Join(rootPath, outName, "%d.png"),
 			"-pix_fmt", "yuv420p",
 			filepath.Join(rootPath, outName+".mp4")).CombinedOutput()
 		if err != nil {
