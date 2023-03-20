@@ -3,6 +3,7 @@ package v2shared
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -47,17 +48,29 @@ func DoesPathExists(p string) bool {
 }
 
 func GetFFMPEGCommand() string {
-	// get the right ffmpeg command
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
+	if runtime.GOOS == "windows" {
+		// get the right ffmpeg command
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			panic(err)
+		}
+
+		devPath := filepath.Join(homeDir, "bin", "ffmpeg.exe")
+		bundledPath := filepath.Join("C:\\Program Files (x86)\\Videos229", "ffmpeg.exe")
+		if DoesPathExists(devPath) {
+			return devPath
+		}
+
+		return bundledPath
+	} else {
+		var cmdPath string
+		begin := os.Getenv("SNAP")
+		cmdPath = "ffmpeg"
+		if begin != "" && !strings.HasPrefix(begin, "/snap/go/") {
+			cmdPath = filepath.Join(begin, "bin", "ffmpeg")
+		}
+
+		return cmdPath
 	}
 
-	devPath := filepath.Join(homeDir, "bin", "ffmpeg.exe")
-	bundledPath := filepath.Join("C:\\Program Files (x86)\\Videos229", "ffmpeg.exe")
-	if DoesPathExists(devPath) {
-		return devPath
-	}
-
-	return bundledPath
 }
