@@ -16,7 +16,7 @@ import (
 	"github.com/saenuma/zazabul"
 )
 
-// method1 generates a video with the sprite dancing round a circle
+// method3 for rotation in place style
 func Method3(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
@@ -40,7 +40,7 @@ func Method3(conf zazabul.Config) string {
 
 	// var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	increment := 2.0
+	increment := 5.0
 	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
 
 	var rotationAngle float64

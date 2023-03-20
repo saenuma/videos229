@@ -16,7 +16,7 @@ import (
 	"github.com/saenuma/zazabul"
 )
 
-// method1 generates a video with the sprite dancing round a circle
+// method2 for disappearing pattern style
 func Method2(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
@@ -38,21 +38,24 @@ func Method2(conf zazabul.Config) string {
 
 	backgroundImg := imaging.New(1366, 768, backgroundColor)
 
-	var increment uint8 = 2
+	var increment = 5
 	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
 
-	var transparency uint8 = 255
+	var transparency = 255
 	for seconds := 0; seconds < totalSeconds; seconds++ {
 
+		action := -1
 		for i := 1; i <= 60; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
-			transparency -= increment
+			transparency += action * increment
 			if transparency <= 0 {
-				transparency = 255
+				action = 1
+			} else if transparency == 255 {
+				action = -1
 			}
-			toWriteImage := makePattern(backgroundImg, spriteImg, transparency)
+			toWriteImage := makePattern(backgroundImg, spriteImg, uint8(transparency))
 			imaging.Save(toWriteImage, outPath)
 		}
 
