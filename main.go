@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	color2 "github.com/gookit/color"
@@ -72,7 +73,7 @@ video_length:
 method: 1
 
   	`
-		configFileName := "s" + time.Now().Format("20060102T150405") + ".zconf"
+		configFileName := "sp_" + time.Now().Format("20060102T150405") + ".zconf"
 		writePath := filepath.Join(rootPath, configFileName)
 
 		conf, err := zazabul.ParseConfig(tmplOfMethod1)
@@ -105,7 +106,7 @@ video_length:
 method: 1
 
   	`
-		configFileName := "s" + time.Now().Format("20060102T150405") + ".zconf"
+		configFileName := "sl_" + time.Now().Format("20060102T150405") + ".zconf"
 		writePath := filepath.Join(rootPath, configFileName)
 
 		conf, err := zazabul.ParseConfig(tmplOfMethod1)
@@ -128,7 +129,8 @@ method: 1
 			os.Exit(1)
 		}
 
-		confPath := filepath.Join(rootPath, os.Args[2])
+		confFileName := os.Args[2]
+		confPath := filepath.Join(rootPath, confFileName)
 
 		conf, err := zazabul.LoadConfigFile(confPath)
 		if err != nil {
@@ -143,7 +145,8 @@ method: 1
 		}
 
 		var outName string
-		if conf.Get("sprite_file") != "" {
+
+		if strings.HasPrefix(confFileName, "sp_") {
 			if conf.Get("method") == "1" {
 				outName = sprites.Method1(conf)
 			} else if conf.Get("method") == "2" {
@@ -159,7 +162,7 @@ method: 1
 				os.Exit(1)
 			}
 
-		} else if conf.Get("pictures_dir") != "" {
+		} else if strings.HasPrefix(confFileName, "sl_") {
 			if conf.Get("method") == "1" {
 				outName = slideshow.Method1(conf)
 			} else if conf.Get("method") == "2" {
