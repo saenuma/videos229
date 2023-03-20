@@ -13,9 +13,7 @@ import (
 	"image"
 	// "image/color"
 	"math"
-	"runtime"
 	"strconv"
-	"sync"
 
 	color2 "github.com/gookit/color"
 	"github.com/lucasb-eyer/go-colorful"
@@ -59,39 +57,7 @@ func Method5(conf zazabul.Config) string {
 		}
 	}
 
-	var wg sync.WaitGroup
-	numberOfCPUS := runtime.NumCPU()
-	jobsPerThread := int(math.Floor(float64(totalSeconds) / float64(numberOfCPUS)))
-
-	for threadIndex := 0; threadIndex < numberOfCPUS; threadIndex++ {
-		wg.Add(1)
-
-		startSeconds := threadIndex * jobsPerThread
-		endSeconds := (threadIndex + 1) * jobsPerThread
-
-		go func(startSeconds, endSeconds int, objectsState []image.Point, wg *sync.WaitGroup) {
-			defer wg.Done()
-
-			// begin pasting and making displacements upwards
-			for seconds := 0; seconds < totalSeconds; seconds++ {
-				for i := 1; i <= 60; i++ {
-					out := (24 * seconds) + i
-					outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
-
-					toWriteImage := writeCurrentState(backgroundImg, spriteImg, objectsState)
-					// update state
-					objectsState = updateStateDownwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
-					imaging.Save(toWriteImage, outPath)
-				}
-
-			}
-
-		}(startSeconds, endSeconds, objectsState, &wg)
-
-	}
-	wg.Wait()
-
-	for seconds := (jobsPerThread * numberOfCPUS); seconds < totalSeconds; seconds++ {
+	for seconds := 0; seconds < totalSeconds; seconds++ {
 		for i := 1; i <= 60; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
