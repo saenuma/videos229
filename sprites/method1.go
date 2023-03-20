@@ -58,8 +58,8 @@ func Method1(conf zazabul.Config) string {
 
 			tinyAngle += angleIncrement
 
-			toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle, 1)
-			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle, 2)
+			toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle)
+			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle)
 			imaging.Save(toWriteImage, outPath)
 		}
 	}
@@ -67,17 +67,10 @@ func Method1(conf zazabul.Config) string {
 	return outName
 }
 
-func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64, rotationStyle int) image.Image {
+func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64) image.Image {
 	angleInRadians := angle * (math.Pi / 180)
-	var xCircle float64
-	var yCircle float64
-	if rotationStyle == 1 {
-		xCircle = float64(radius) * math.Sin(-angleInRadians)
-		yCircle = float64(radius) * math.Cos(-angleInRadians)
-	} else {
-		xCircle = float64(radius) * math.Sin(angleInRadians)
-		yCircle = float64(radius) * math.Cos(angleInRadians)
-	}
+	xCircle := float64(radius) * math.Sin(angleInRadians)
+	yCircle := float64(radius) * math.Cos(angleInRadians)
 
 	newBackgroundImg := imaging.New(1366, 768, color.White)
 	newBackgroundImg = imaging.Paste(newBackgroundImg, background, image.Pt(0, 0))
