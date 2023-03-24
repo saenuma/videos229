@@ -11,6 +11,13 @@ sprite_file:
 
 // video_length is the length of the output video in this format (mm:ss)
 video_length:
+
+//vary to your tastes
+radius: 100
+
+// vary to your tastes (higher faster, lower slower)
+increment: 10
+
 	`
 
 	(*tmplStore)["sprites/2"] = `

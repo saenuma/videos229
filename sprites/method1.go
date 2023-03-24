@@ -42,12 +42,14 @@ func Method1(conf zazabul.Config) string {
 
 	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	radius := 200
-	xOrigin := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
-	yOrigin := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
+	radiusStr := conf.Get("radius")
+	radius, _ := strconv.Atoi(radiusStr)
+	angleIncrement, _ := strconv.Atoi(conf.Get("increment"))
+
+	xOrigin := rand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
+	yOrigin := rand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
 	xOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
 	yOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-	var angleIncrement float64 = float64(10)
 
 	var tinyAngle float64
 
@@ -56,7 +58,7 @@ func Method1(conf zazabul.Config) string {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
-			tinyAngle += angleIncrement
+			tinyAngle += float64(angleIncrement)
 
 			toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle)
 			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle)
