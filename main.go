@@ -17,11 +17,17 @@ import (
 
 const VersionFormat = "20060102T150405MST"
 
+var configTemplates map[string]string = make(map[string]string)
+
 func main() {
 	rootPath, err := v2shared.GetRootPath()
 	if err != nil {
 		panic(err)
 	}
+
+	// register functions
+	sprites.RegisterAll(&configTemplates)
+	slideshow.RegisterAll(&configTemplates)
 
 	if len(os.Args) < 2 {
 		color2.Red.Println("Expecting a command. Run with help subcommand to view help.")
@@ -38,15 +44,15 @@ Directory Commands:
           in this cli program must reside.
 
 Main Commands:
-  initsp    Initialize Sprites Video. Creates a config file describing your video.
-            Edit to your own requirements.
+  lf        Lists the available folders
 
-  initsl    Initialize Slideshow Video. Creates a config file describing your video.
-            Edit to your own requirements.
+  lm        Lists the methods in a folder. Expects the folder name as the only arguments
+
+  br        Begins a render. It expects the folder/number combo.
+            For example: videos229 br sprites/1
 
   run       Renders a project with the config created above. It expects a config file
-            created from either 'initsp' or 'initsl' above. Command 'run' would
-            generate an mp4 video.
+            created from 'br' above. Command 'run' would generate an mp4 video.
             All files must be placed in the working directory.
 
   			`)
@@ -54,72 +60,34 @@ Main Commands:
 	case "pwd":
 		fmt.Println(rootPath)
 
-	case "initsp":
-		var tmplOfMethod1 = `// background_color is the color of the background image. Example is #af1382
-background_color: #ffffff
+	case "lf":
+		fmt.Println("sprites")
+		fmt.Println("slideshows")
 
-// sprite_file. A sprite is a unit of a pattern in imagery.
-sprite_file:
+	case "br":
+		inputMethod := os.Args[2]
+		tmpl, ok := configTemplates[os.Args[2]]
+		if ok {
+			stub := strings.ReplaceAll(inputMethod, "/", "_") + "_"
+			configFileName := stub + time.Now().Format("20060102T150405") + ".zconf"
+			writePath := filepath.Join(rootPath, configFileName)
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+			conf, err := zazabul.ParseConfig(tmpl)
+			if err != nil {
+				panic(err)
+			}
 
-// method. The method are in numbers. Allowed values are 1, 2, 3, 4, 5.
-// 1: for movement around a circle style
-// 2: for disappearing pattern style
-// 3: for rotation in place style
-// 4: for upward movement
-// 5: for downward movement
-method: 1
+			err = conf.Write(writePath)
+			if err != nil {
+				panic(err)
+			}
 
-  	`
-		configFileName := "sp_" + time.Now().Format("20060102T150405") + ".zconf"
-		writePath := filepath.Join(rootPath, configFileName)
+			fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
-		conf, err := zazabul.ParseConfig(tmplOfMethod1)
-		if err != nil {
-			panic(err)
+		} else {
+			color2.Red.Println("Invalid method: " + inputMethod)
+			return
 		}
-
-		err = conf.Write(writePath)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
-
-	case "initsl":
-		var tmplOfMethod1 = `// background_color is the color of the background image. Example is #af1382
-background_color: #ffffff
-
-// The directory containing the pictures for a slideshow. It must be stored in the working directory
-// of videos229.
-// All pictures here must be of width 1366px and height 768px
-pictures_dir:
-
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
-
-// method. The method are in numbers. Allowed values are 1
-// 1: for immediate appearance slideshow
-// 2: for fade in slideshow
-method: 1
-
-  	`
-		configFileName := "sl_" + time.Now().Format("20060102T150405") + ".zconf"
-		writePath := filepath.Join(rootPath, configFileName)
-
-		conf, err := zazabul.ParseConfig(tmplOfMethod1)
-		if err != nil {
-			panic(err)
-		}
-
-		err = conf.Write(writePath)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Printf("Edit the file at '%s' before launching.\n", writePath)
 
 	case "run":
 		rootPath, _ := v2shared.GetRootPath()
@@ -145,27 +113,28 @@ method: 1
 		}
 
 		var outName string
+		confFilenameparts := strings.Split(confFileName, "_")
+		if strings.HasPrefix(confFileName, "sprites_") {
 
-		if strings.HasPrefix(confFileName, "sp_") {
-			if conf.Get("method") == "1" {
+			if confFilenameparts[1] == "1" {
 				outName = sprites.Method1(conf)
-			} else if conf.Get("method") == "2" {
+			} else if confFilenameparts[1] == "2" {
 				outName = sprites.Method2(conf)
-			} else if conf.Get("method") == "3" {
+			} else if confFilenameparts[1] == "3" {
 				outName = sprites.Method3(conf)
-			} else if conf.Get("method") == "4" {
+			} else if confFilenameparts[1] == "4" {
 				outName = sprites.Method4(conf)
-			} else if conf.Get("method") == "5" {
+			} else if confFilenameparts[1] == "5" {
 				outName = sprites.Method5(conf)
 			} else {
 				color2.Red.Println("The method code is invalid.")
 				os.Exit(1)
 			}
 
-		} else if strings.HasPrefix(confFileName, "sl_") {
-			if conf.Get("method") == "1" {
+		} else if strings.HasPrefix(confFileName, "slideshows_") {
+			if confFilenameparts[1] == "1" {
 				outName = slideshow.Method1(conf)
-			} else if conf.Get("method") == "2" {
+			} else if confFilenameparts[1] == "2" {
 				outName = slideshow.Method2(conf)
 			}
 		}
