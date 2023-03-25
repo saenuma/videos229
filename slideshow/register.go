@@ -8,10 +8,10 @@ func RegisterAll(tmplStore *map[string]string) {
 pictures_dir:
 
 // video_width is the width of the output video in int
-video_width: videoWidth
+video_width: 1366
 
 // video_height is the height of the output video in width
-video_height: videoHeight
+video_height: 768
 
 // video_length is the length of the output video in this format (mm:ss)
 video_length:
@@ -27,10 +27,10 @@ switch_frequency: 15
 pictures_dir:
 
 // video_width is the width of the output video in int
-video_width: videoWidth
+video_width: 1366
 
 // video_height is the height of the output video in width
-video_height: videoHeight
+video_height: 768
 
 // video_length is the length of the output video in this format (mm:ss)
 video_length:
