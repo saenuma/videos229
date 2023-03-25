@@ -44,7 +44,7 @@ func Method2(conf zazabul.Config) string {
 	for i, dirFI := range dirFIs {
 		aPicPath := filepath.Join(fullPicsPath, dirFI.Name())
 		aPicOpened, _ := imaging.Open(aPicPath)
-		if aPicOpened.Bounds().Dx() != 1366 || aPicOpened.Bounds().Dy() != 768 {
+		if aPicOpened.Bounds().Dx() != videoWidth || aPicOpened.Bounds().Dy() != videoHeight {
 			color2.Red.Printf("The width of the picture '%s'\n is not '%s' or the height is not '%s'.\nExiting.\n",
 				videoWidth, videoHeight, aPicPath)
 			os.Exit(1)
@@ -55,7 +55,7 @@ func Method2(conf zazabul.Config) string {
 
 	var wg sync.WaitGroup
 
-	switchFrequency := 15 // seconds
+	switchFrequency, _ := strconv.Atoi(conf.Get("switch_frequency"))
 	totalSeconds := v2shared.TimeFormatToSeconds(conf.Get("video_length"))
 	totalThreadsF64 := float64(totalSeconds) / float64(switchFrequency)
 	totalThreads := int(math.Floor(totalThreadsF64))
