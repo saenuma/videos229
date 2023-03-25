@@ -56,6 +56,9 @@ video_height: 768
 
 // video_length is the length of the output video in seconds
 video_length: 10
+
+// increment is the incrememt to add to each rotation in this movement
+increment: 10
 	`
 
 	(*tmplStore)["sprites/4"] = `// background_color is the color of the background image. Example is #af1382
