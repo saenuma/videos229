@@ -21,7 +21,7 @@ import (
 func Method1(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
-	outName := ".tmp_sp_" + time.Now().Format("20060102T150405")
+	outName := "sp_" + time.Now().Format("20060102T150405")
 	renderPath := filepath.Join(rootPath, outName)
 	os.MkdirAll(renderPath, 0777)
 

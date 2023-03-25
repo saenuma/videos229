@@ -25,15 +25,6 @@ func main() {
 		panic(err)
 	}
 
-	// delete all temporary files undeleted
-	dirFIs, _ := os.ReadDir(rootPath)
-	for _, dirFI := range dirFIs {
-		if strings.HasPrefix(dirFI.Name(), ".tmp_") {
-			toDeletePath := filepath.Join(rootPath, dirFI.Name())
-			os.RemoveAll(toDeletePath)
-		}
-	}
-
 	// register functions
 	sprites.RegisterAll(&configTemplates)
 	slideshow.RegisterAll(&configTemplates)
