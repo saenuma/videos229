@@ -44,7 +44,7 @@ func Method3(conf zazabul.Config) string {
 	// var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	increment := 5.0
-	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 
 	var rotationAngle float64
 	for seconds := 0; seconds < totalSeconds; seconds++ {

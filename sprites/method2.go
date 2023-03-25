@@ -37,7 +37,7 @@ func Method2(conf zazabul.Config) string {
 	}
 
 	var increment = 5
-	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
 	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
 

@@ -26,7 +26,7 @@ func Method5(conf zazabul.Config) string {
 	outName := "sp_" + time.Now().Format("20060102T150405")
 	renderPath := filepath.Join(rootPath, outName)
 	os.MkdirAll(renderPath, 0777)
-	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 
 	spriteImg, err := imaging.Open(filepath.Join(rootPath, conf.Get("sprite_file")))
 	if err != nil {

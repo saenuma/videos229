@@ -14,8 +14,8 @@ video_width: 1366
 // video_height is the height of the output video in width
 video_height: 768
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video in seconds
+video_length: 10
 
 //vary to your tastes
 radius: 100
@@ -37,8 +37,8 @@ video_width: 1366
 // video_height is the height of the output video in width
 video_height: 768
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video in seconds
+video_length: 10
 	`
 
 	(*tmplStore)["sprites/3"] = `// background_color is the color of the background image. Example is #af1382
@@ -54,8 +54,8 @@ video_width: 1366
 video_height: 768
 
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video in seconds
+video_length: 10
 	`
 
 	(*tmplStore)["sprites/4"] = `// background_color is the color of the background image. Example is #af1382
@@ -70,8 +70,15 @@ video_width: 1366
 // video_height is the height of the output video in width
 video_height: 768
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video in seconds
+video_length: 10
+
+// displacement is the height to be given to the even objects in this movement
+displacement: 0
+
+// increment is the incrememt to add to each movement in this movement
+increment: 10
+
 	`
 
 	(*tmplStore)["sprites/5"] = `// background_color is the color of the background image. Example is #af1382
@@ -86,8 +93,15 @@ video_width: 1366
 // video_height is the height of the output video in width
 video_height: 768
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video in seconds
+video_length: 10
+
+// displacement is the height to be given to the even objects in this movement
+displacement: 0
+
+// increment is the incrememt to add to each movement in this movement
+increment: 10
+
 	`
 
 }

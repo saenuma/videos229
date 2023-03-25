@@ -13,8 +13,8 @@ video_width: 1366
 // video_height is the height of the output video in width
 video_height: 768
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video seconds
+video_length: 10
 
 // switch_frequency is the number of seconds to switch to a new picture
 switch_frequency: 15
@@ -32,8 +32,8 @@ video_width: 1366
 // video_height is the height of the output video in width
 video_height: 768
 
-// video_length is the length of the output video in this format (mm:ss)
-video_length:
+// video_length is the length of the output video seconds
+video_length: 10
 
 // switch_frequency is the number of seconds to switch to a new picture
 switch_frequency: 15

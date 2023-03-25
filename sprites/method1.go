@@ -40,7 +40,7 @@ func Method1(conf zazabul.Config) string {
 	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	// get animation variables
-	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
 	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
 	radius, _ := strconv.Atoi(conf.Get("radius"))

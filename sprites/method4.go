@@ -43,12 +43,14 @@ func Method4(conf zazabul.Config) string {
 	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
 	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
-	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 	numberOfObjects := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx())
 
 	// load up sprites locations into objectsState
 	objectsState := make([]image.Point, 0)
-	displacement := 100
+	displacement, _ := strconv.Atoi(conf.Get("displacement"))
+	increment, _ := strconv.Atoi(conf.Get("increment"))
+
 	for i := 0; i <= numberOfObjects; i++ {
 		if int(math.Mod(float64(i), float64(2))) == 0 {
 			newX := i * spriteImg.Bounds().Dx()
@@ -66,7 +68,7 @@ func Method4(conf zazabul.Config) string {
 
 			toWriteImage := writeCurrentState(backgroundImg, spriteImg, objectsState)
 			// update state
-			objectsState = updateStateUpwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
+			objectsState = updateStateUpwards(backgroundImg, spriteImg, objectsState, displacement, increment, numberOfObjects)
 			imaging.Save(toWriteImage, outPath)
 		}
 	}
@@ -84,11 +86,9 @@ func writeCurrentState(backgroundImg, spriteImg image.Image, objectsState []imag
 	return newBackgroundImg
 }
 
-func updateStateUpwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, numberOfObjects int) []image.Point {
-	displacement2 := 10
-
+func updateStateUpwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, displacement, increment, numberOfObjects int) []image.Point {
 	for i, point := range objectsState {
-		newPoint := image.Pt(point.X, point.Y-displacement2)
+		newPoint := image.Pt(point.X, point.Y-increment)
 		objectsState[i] = newPoint
 	}
 
@@ -100,8 +100,7 @@ func updateStateUpwards(backgroundImg, spriteImg image.Image, objectsState []ima
 	truthValue4 := almostLastPt.Y+spriteImg.Bounds().Dy() < backgroundImg.Bounds().Dy()
 
 	if truthValue3 && truthValue4 {
-		// load up sprites locations into objectsState
-		displacement := 100
+		//load up sprites locations into objectsState
 		for i := 0; i <= numberOfObjects; i++ {
 			if int(math.Mod(float64(i), float64(2))) == 0 {
 				newX := i * spriteImg.Bounds().Dx()

@@ -56,7 +56,7 @@ func Method1(conf zazabul.Config) string {
 	var wg sync.WaitGroup
 
 	switchFrequency, _ := strconv.Atoi(conf.Get("switch_frequency"))
-	totalSeconds := v2shared.TimeFormatToSeconds(conf.Get("video_length"))
+	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 	totalThreadsF64 := float64(totalSeconds) / float64(switchFrequency)
 	totalThreads := int(math.Floor(totalThreadsF64))
 

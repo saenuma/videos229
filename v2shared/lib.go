@@ -4,7 +4,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -23,21 +22,6 @@ func GetRootPath() (string, error) {
 	}
 
 	return dd, nil
-}
-
-func TimeFormatToSeconds(s string) int {
-	// calculate total duration of the song
-	parts := strings.Split(s, ":")
-	minutesPartConverted, err := strconv.Atoi(parts[0])
-	if err != nil {
-		panic(err)
-	}
-	secondsPartConverted, err := strconv.Atoi(parts[1])
-	if err != nil {
-		panic(err)
-	}
-	totalSecondsOfSong := (24 * minutesPartConverted) + secondsPartConverted
-	return totalSecondsOfSong
 }
 
 func DoesPathExists(p string) bool {
