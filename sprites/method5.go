@@ -1,22 +1,16 @@
 package sprites
 
 import (
+	"image"
 	"os"
-	// "fmt"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/disintegration/imaging"
-	"github.com/saenuma/zazabul"
-
-	// "math/rand"
-	"image"
-	// "image/color"
-
-	"strconv"
-
 	color2 "github.com/gookit/color"
 	"github.com/lucasb-eyer/go-colorful"
+	"github.com/saenuma/zazabul"
 )
 
 // method4 generates a video with the sprite moving downwards
@@ -88,7 +82,7 @@ func updateStateDownwards(backgroundImg, spriteImg image.Image, objectsState []i
 		}
 	}
 
-	if len(objectsState) > (numberOfObjects * 10) {
+	if len(objectsState) > (numberOfObjects * 20) {
 		// remove top objects if necessary
 		firstPt := objectsState[0]
 		truthValue1 := firstPt.Y+spriteImg.Bounds().Dy() > backgroundImg.Bounds().Dy()

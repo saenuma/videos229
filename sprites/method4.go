@@ -1,21 +1,17 @@
 package sprites
 
 import (
+	"image"
+	"image/color"
 	"os"
-	// "fmt"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/disintegration/imaging"
-	"github.com/saenuma/zazabul"
-
-	// "math/rand"
-	"image"
-	"image/color"
-	"strconv"
-
 	color2 "github.com/gookit/color"
 	"github.com/lucasb-eyer/go-colorful"
+	"github.com/saenuma/zazabul"
 )
 
 // method4 generates a video with the sprite moving upwards
