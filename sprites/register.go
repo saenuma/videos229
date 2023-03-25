@@ -73,9 +73,6 @@ video_height: 768
 // video_length is the length of the output video in seconds
 video_length: 10
 
-// displacement is the height to be given to the even objects in this movement
-displacement: 0
-
 // increment is the incrememt to add to each movement in this movement
 increment: 10
 
@@ -95,9 +92,6 @@ video_height: 768
 
 // video_length is the length of the output video in seconds
 video_length: 10
-
-// displacement is the height to be given to the even objects in this movement
-displacement: 0
 
 // increment is the incrememt to add to each movement in this movement
 increment: 10

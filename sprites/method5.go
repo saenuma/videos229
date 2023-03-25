@@ -12,7 +12,7 @@ import (
 	// "math/rand"
 	"image"
 	// "image/color"
-	"math"
+
 	"strconv"
 
 	color2 "github.com/gookit/color"
@@ -48,15 +48,10 @@ func Method5(conf zazabul.Config) string {
 
 	// load up sprites locations into objectsState
 	objectsState := make([]image.Point, 0)
-	displacement := 10
+	increment, _ := strconv.Atoi(conf.Get("increment"))
 	for i := 0; i <= numberOfObjects; i++ {
-		if int(math.Mod(float64(i), float64(2))) == 0 {
-			newX := i * spriteImg.Bounds().Dx()
-			objectsState = append(objectsState, image.Pt(newX, displacement-spriteImg.Bounds().Dy()))
-		} else {
-			newX := i * spriteImg.Bounds().Dx()
-			objectsState = append(objectsState, image.Pt(newX, -40-spriteImg.Bounds().Dy()))
-		}
+		newX := i * spriteImg.Bounds().Dx()
+		objectsState = append(objectsState, image.Pt(newX, increment-spriteImg.Bounds().Dy()))
 	}
 
 	for seconds := 0; seconds < totalSeconds; seconds++ {
@@ -64,9 +59,9 @@ func Method5(conf zazabul.Config) string {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
-			toWriteImage := writeCurrentState(backgroundImg, spriteImg, objectsState)
+			toWriteImage := writeCurrentState(backgroundImg, spriteImg, backgroundColor, objectsState)
 			// update state
-			objectsState = updateStateDownwards(backgroundImg, spriteImg, objectsState, numberOfObjects)
+			objectsState = updateStateDownwards(backgroundImg, spriteImg, objectsState, increment, numberOfObjects)
 			imaging.Save(toWriteImage, outPath)
 		}
 	}
@@ -74,41 +69,30 @@ func Method5(conf zazabul.Config) string {
 	return outName
 }
 
-func updateStateDownwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, numberOfObjects int) []image.Point {
-	displacement2 := 10
+func updateStateDownwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, increment, numberOfObjects int) []image.Point {
 
 	for i, point := range objectsState {
-		newPoint := image.Pt(point.X, point.Y+displacement2)
+		newPoint := image.Pt(point.X, point.Y+increment)
 		objectsState[i] = newPoint
 	}
 
 	// append objects if necessary
-	almostLastPt := objectsState[len(objectsState)-2]
 	lastPt := objectsState[len(objectsState)-1]
 
-	truthValue3 := lastPt.Y > ((spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + 10)
-	truthValue4 := almostLastPt.Y > ((spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + 10)
+	truthValue3 := lastPt.Y > ((spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + increment)
 
-	if truthValue3 && truthValue4 {
-		displacement := 10
+	if truthValue3 {
 		for i := 0; i <= numberOfObjects; i++ {
-			if int(math.Mod(float64(i), float64(2))) == 0 {
-				newX := i * spriteImg.Bounds().Dx()
-				objectsState = append(objectsState, image.Pt(newX, displacement-spriteImg.Bounds().Dy()))
-			} else {
-				newX := i * spriteImg.Bounds().Dx()
-				objectsState = append(objectsState, image.Pt(newX, -40-spriteImg.Bounds().Dy()))
-			}
+			newX := i * spriteImg.Bounds().Dx()
+			objectsState = append(objectsState, image.Pt(newX, increment-spriteImg.Bounds().Dy()))
 		}
 	}
 
 	if len(objectsState) > (numberOfObjects * 10) {
 		// remove top objects if necessary
 		firstPt := objectsState[0]
-		secondPt := objectsState[1]
 		truthValue1 := firstPt.Y+spriteImg.Bounds().Dy() > backgroundImg.Bounds().Dy()
-		truthValue2 := secondPt.Y+spriteImg.Bounds().Dy() > backgroundImg.Bounds().Dy()
-		if truthValue1 || truthValue2 {
+		if truthValue1 {
 			objectsState = append(objectsState[:numberOfObjects], objectsState[numberOfObjects+1:]...)
 		}
 	}
