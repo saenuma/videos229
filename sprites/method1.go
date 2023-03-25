@@ -36,15 +36,17 @@ func Method1(conf zazabul.Config) string {
 		color2.Red.Printf("The color code '%s' is not valid.\nExiting.\n", conf.Get("background_color"))
 		os.Exit(1)
 	}
-	backgroundImg := imaging.New(1366, 768, backgroundColor)
-
-	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
 
 	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	radiusStr := conf.Get("radius")
-	radius, _ := strconv.Atoi(radiusStr)
+	// get animation variables
+	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
+	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+	radius, _ := strconv.Atoi(conf.Get("radius"))
 	angleIncrement, _ := strconv.Atoi(conf.Get("increment"))
+
+	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
 	xOrigin := rand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
 	yOrigin := rand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
@@ -74,7 +76,7 @@ func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int,
 	xCircle := float64(radius) * math.Sin(angleInRadians)
 	yCircle := float64(radius) * math.Cos(angleInRadians)
 
-	newBackgroundImg := imaging.New(1366, 768, color.White)
+	newBackgroundImg := imaging.New(background.Bounds().Dx(), background.Bounds().Dy(), color.White)
 	newBackgroundImg = imaging.Paste(newBackgroundImg, background, image.Pt(0, 0))
 
 	return pasteWithoutTransparentBackground(newBackgroundImg, sprite, xOrigin+int(xCircle), yOrigin+int(yCircle))

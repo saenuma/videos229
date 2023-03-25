@@ -36,10 +36,12 @@ func Method2(conf zazabul.Config) string {
 		os.Exit(1)
 	}
 
-	backgroundImg := imaging.New(1366, 768, backgroundColor)
-
 	var increment = 5
 	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
+	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
+	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+
+	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
 	var transparency = 255
 	for seconds := 0; seconds < totalSeconds; seconds++ {
@@ -68,7 +70,7 @@ func makePattern(backgroundImg, spriteImg image.Image, transparency uint8) *imag
 	numberOfXIterations := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx())
 	numberOfYIternations := int(backgroundImg.Bounds().Dy() / spriteImg.Bounds().Dy())
 
-	newBackgroundImg := imaging.New(1366, 768, color.White)
+	newBackgroundImg := imaging.New(backgroundImg.Bounds().Dx(), backgroundImg.Bounds().Dy(), color.White)
 	newBackgroundImg = imaging.Paste(newBackgroundImg, backgroundImg, image.Pt(0, 0))
 
 	for x := 0; x < numberOfXIterations+1; x++ {

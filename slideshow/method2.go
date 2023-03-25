@@ -31,6 +31,9 @@ func Method2(conf zazabul.Config) string {
 		os.Exit(1)
 	}
 
+	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
+	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+
 	dirFIs, err := os.ReadDir(fullPicsPath)
 	if err != nil {
 		color2.Red.Printf("Error reading directory '%s'.\nFull Error: %s\n.Exiting", fullPicsPath, err.Error())
@@ -42,7 +45,8 @@ func Method2(conf zazabul.Config) string {
 		aPicPath := filepath.Join(fullPicsPath, dirFI.Name())
 		aPicOpened, _ := imaging.Open(aPicPath)
 		if aPicOpened.Bounds().Dx() != 1366 || aPicOpened.Bounds().Dy() != 768 {
-			color2.Red.Printf("The width of the picture '%s'\n is not 1366px or the height is not 768px.\nExiting.\n", aPicPath)
+			color2.Red.Printf("The width of the picture '%s'\n is not '%s' or the height is not '%s'.\nExiting.\n",
+				videoWidth, videoHeight, aPicPath)
 			os.Exit(1)
 		}
 		picsBytes[i] = aPicOpened

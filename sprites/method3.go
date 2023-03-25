@@ -36,7 +36,10 @@ func Method3(conf zazabul.Config) string {
 		os.Exit(1)
 	}
 
-	backgroundImg := imaging.New(1366, 768, backgroundColor)
+	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
+	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+
+	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
 	// var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -65,7 +68,7 @@ func makePatternWithRotations(backgroundImg, spriteImg image.Image, rotationAngl
 	numberOfXIterations := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx())
 	numberOfYIternations := int(backgroundImg.Bounds().Dy() / spriteImg.Bounds().Dy())
 
-	newBackgroundImg := imaging.New(1366, 768, color.White)
+	newBackgroundImg := imaging.New(backgroundImg.Bounds().Dx(), backgroundImg.Bounds().Dy(), color.White)
 	newBackgroundImg = imaging.Paste(newBackgroundImg, backgroundImg, image.Pt(0, 0))
 
 	for x := 0; x < numberOfXIterations+1; x++ {

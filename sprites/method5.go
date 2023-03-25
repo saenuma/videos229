@@ -40,7 +40,9 @@ func Method5(conf zazabul.Config) string {
 		os.Exit(1)
 	}
 
-	backgroundImg := imaging.New(1366, 768, backgroundColor)
+	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
+	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
 	numberOfObjects := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx())
 

@@ -39,7 +39,9 @@ func Method4(conf zazabul.Config) string {
 		os.Exit(1)
 	}
 
-	backgroundImg := imaging.New(1366, 768, backgroundColor)
+	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
+	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
 	totalSeconds := timeFormatToSeconds(conf.Get("video_length"))
 	numberOfObjects := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx())
@@ -73,7 +75,7 @@ func Method4(conf zazabul.Config) string {
 }
 
 func writeCurrentState(backgroundImg, spriteImg image.Image, objectsState []image.Point) *image.NRGBA {
-	newBackgroundImg := imaging.New(1366, 768, color.White)
+	newBackgroundImg := imaging.New(backgroundImg.Bounds().Dx(), backgroundImg.Bounds().Dy(), color.White)
 	newBackgroundImg = imaging.Paste(newBackgroundImg, backgroundImg, image.Pt(0, 0))
 
 	for _, point := range objectsState {
