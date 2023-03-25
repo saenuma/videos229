@@ -25,6 +25,15 @@ func main() {
 		panic(err)
 	}
 
+	// delete all temporary files undeleted
+	dirFIs, _ := os.ReadDir(rootPath)
+	for _, dirFI := range dirFIs {
+		if strings.HasPrefix(dirFI.Name(), ".tmp_") {
+			toDeletePath := filepath.Join(rootPath, dirFI.Name())
+			os.RemoveAll(toDeletePath)
+		}
+	}
+
 	// register functions
 	sprites.RegisterAll(&configTemplates)
 	slideshow.RegisterAll(&configTemplates)
@@ -107,6 +116,7 @@ Main Commands:
 		}
 
 	case "run":
+		startTime := time.Now()
 		rootPath, _ := v2shared.GetRootPath()
 
 		if len(os.Args) != 3 {
@@ -168,7 +178,7 @@ Main Commands:
 			panic(err)
 		}
 
-		os.RemoveAll(filepath.Join(rootPath, outName))
+		fmt.Printf("took %ds\n", int(time.Since(startTime).Seconds()))
 		fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName+".mp4"))
 
 	default:
