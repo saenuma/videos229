@@ -170,16 +170,16 @@ Main Commands:
 
 		command := v2shared.GetFFMPEGCommand()
 
+		outPath := filepath.Join(rootPath, "video_"+time.Now().Format("20060102T150405")+".mp4")
 		out, err := exec.Command(command, "-framerate", "24", "-i", filepath.Join(rootPath, outName, "%d.png"),
-			"-pix_fmt", "yuv420p",
-			filepath.Join(rootPath, outName+".mp4")).CombinedOutput()
+			"-pix_fmt", "yuv420p", outPath).CombinedOutput()
 		if err != nil {
 			fmt.Println(string(out))
 			panic(err)
 		}
 
 		fmt.Printf("took %ds\n", int(time.Since(startTime).Seconds()))
-		fmt.Println("View the generated video at: ", filepath.Join(rootPath, outName+".mp4"))
+		fmt.Println("View the generated video at: ", outPath)
 
 	default:
 		color2.Red.Println("Unexpected command. Run the cli with --help to find out the supported commands.")
