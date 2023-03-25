@@ -17,6 +17,7 @@ import (
 	"github.com/saenuma/zazabul"
 )
 
+// fade in slideshow
 func Method2(conf zazabul.Config) string {
 	rootPath, _ := v2shared.GetRootPath()
 

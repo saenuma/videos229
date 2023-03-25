@@ -15,6 +15,7 @@ import (
 	"github.com/saenuma/zazabul"
 )
 
+// immediate appearance slideshow
 func Method1(conf zazabul.Config) string {
 	rootPath, _ := v2shared.GetRootPath()
 

@@ -36,8 +36,7 @@ func main() {
 
 	switch os.Args[1] {
 	case "--help", "help", "h":
-		fmt.Println(`videos229 generates videos that could be used for the background of adverts
-and lyrics videos.
+		fmt.Println(`videos229 generates videos that could be used for the background of adverts.
 
 Directory Commands:
   pwd     Print working directory. This is the directory where the files needed by any command
@@ -63,6 +62,24 @@ Main Commands:
 	case "lf":
 		fmt.Println("sprites")
 		fmt.Println("slideshows")
+
+	case "lm":
+		if os.Args[2] == "sprites" {
+			fmt.Println(`Method Numbers in Folder 'Sprites':
+  1     sprites dancing round a circle
+  2     disappearing pattern style
+  3     rotation in place style
+  4     upward movements of sprites
+  5     downward movements of sprites
+			`)
+
+		} else {
+			fmt.Println(`Method Numbers in Folder 'Sprites':
+  1     immediate appearance slideshow
+  2     fade in slideshow
+			`)
+
+		}
 
 	case "br":
 		inputMethod := os.Args[2]
