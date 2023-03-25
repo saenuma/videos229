@@ -49,7 +49,7 @@ func Method3(conf zazabul.Config) string {
 	var rotationAngle float64
 	for seconds := 0; seconds < totalSeconds; seconds++ {
 
-		for i := 1; i <= 60; i++ {
+		for i := 1; i <= 24; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 

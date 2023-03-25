@@ -56,7 +56,7 @@ func Method1(conf zazabul.Config) string {
 	var tinyAngle float64
 
 	for seconds := 0; seconds < totalSeconds; seconds++ {
-		for i := 1; i <= 60; i++ {
+		for i := 1; i <= 24; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 

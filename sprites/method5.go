@@ -45,11 +45,11 @@ func Method5(conf zazabul.Config) string {
 	increment, _ := strconv.Atoi(conf.Get("increment"))
 	for i := 0; i <= numberOfObjects; i++ {
 		newX := i * spriteImg.Bounds().Dx()
-		objectsState = append(objectsState, image.Pt(newX, increment-spriteImg.Bounds().Dy()))
+		objectsState = append(objectsState, image.Pt(newX, -spriteImg.Bounds().Dy()))
 	}
 
 	for seconds := 0; seconds < totalSeconds; seconds++ {
-		for i := 1; i <= 60; i++ {
+		for i := 1; i <= 24; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
@@ -64,26 +64,23 @@ func Method5(conf zazabul.Config) string {
 }
 
 func updateStateDownwards(backgroundImg, spriteImg image.Image, objectsState []image.Point, increment, numberOfObjects int) []image.Point {
+	// append objects if necessary
+	refPt := objectsState[len(objectsState)-1]
+	truthValue3 := refPt.Y > 0
+	if truthValue3 {
+		for i := 0; i <= numberOfObjects; i++ {
+			newX := i * spriteImg.Bounds().Dx()
+			objectsState = append(objectsState, image.Pt(newX, -spriteImg.Bounds().Dy()))
+		}
+	}
 
 	for i, point := range objectsState {
 		newPoint := image.Pt(point.X, point.Y+increment)
 		objectsState[i] = newPoint
 	}
 
-	// append objects if necessary
-	lastPt := objectsState[len(objectsState)-1]
-
-	truthValue3 := lastPt.Y > ((spriteImg.Bounds().Dy() / 2) - spriteImg.Bounds().Dy() + increment)
-
-	if truthValue3 {
-		for i := 0; i <= numberOfObjects; i++ {
-			newX := i * spriteImg.Bounds().Dx()
-			objectsState = append(objectsState, image.Pt(newX, increment-spriteImg.Bounds().Dy()))
-		}
-	}
-
+	// remove top objects if necessary
 	if len(objectsState) > (numberOfObjects * 20) {
-		// remove top objects if necessary
 		firstPt := objectsState[0]
 		truthValue1 := firstPt.Y+spriteImg.Bounds().Dy() > backgroundImg.Bounds().Dy()
 		if truthValue1 {
