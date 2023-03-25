@@ -3,6 +3,7 @@ package sprites
 import (
 	"image"
 	"image/color"
+	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -69,14 +70,17 @@ func makePatternWithRotations(backgroundImg, spriteImg image.Image, rotationAngl
 
 	for x := 0; x <= numberOfXIterations; x++ {
 		for y := 0; y <= numberOfYIternations; y++ {
-			// if int(math.Mod(float64(x), 2)) == 0 && int(math.Mod(float64(y), 2)) == 0 {
-			newX := (x * spriteImg.Bounds().Dx())
-			newY := (y * spriteImg.Bounds().Dy())
+			if int(math.Mod(float64(x), 2)) == 0 && int(math.Mod(float64(y), 2)) == 0 {
+				newX := (x * spriteImg.Bounds().Dx())
+				newY := (y * spriteImg.Bounds().Dy())
 
-			rotatedSpriteImage := imaging.Rotate(spriteImg, rotationAngle, bgColor)
-			newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, rotatedSpriteImage, newX, newY)
+				rotatedSpriteImage := imaging.Rotate(spriteImg, rotationAngle, bgColor)
+				newSpriteImg := imaging.New(spriteImg.Bounds().Dx(), spriteImg.Bounds().Dy(), color.Transparent)
+				newSpriteImg = imaging.PasteCenter(newSpriteImg, rotatedSpriteImage)
 
-			// }
+				newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, newSpriteImg, newX, newY)
+
+			}
 		}
 	}
 
