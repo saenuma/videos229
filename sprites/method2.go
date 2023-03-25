@@ -45,18 +45,15 @@ func Method2(conf zazabul.Config) string {
 
 	var transparency = 255
 	for seconds := 0; seconds < totalSeconds; seconds++ {
-
-		action := -1
 		for i := 1; i <= 24; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
-			transparency += action * increment
+			transparency -= increment
 			if transparency <= 0 {
-				action = 1
-			} else if transparency == 255 {
-				action = -1
+				transparency = 255
 			}
+
 			toWriteImage := makePattern(backgroundImg, spriteImg, uint8(transparency))
 			imaging.Save(toWriteImage, outPath)
 		}

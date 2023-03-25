@@ -169,6 +169,8 @@ Main Commands:
 			panic(err)
 		}
 
+		os.RemoveAll(filepath.Join(rootPath, outName))
+
 		fmt.Printf("took %ds\n", int(time.Since(startTime).Seconds()))
 		fmt.Println("View the generated video at: ", outPath)
 

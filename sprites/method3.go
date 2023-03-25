@@ -5,7 +5,6 @@ import (
 	// "fmt"
 	"image"
 	"image/color"
-	"math"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -76,12 +75,8 @@ func makePatternWithRotations(backgroundImg, spriteImg image.Image, rotationAngl
 			newX := x * spriteImg.Bounds().Dx()
 			newY := y * spriteImg.Bounds().Dy()
 
-			if int(math.Mod(float64(x), float64(2))) == 0 {
-				rotatedSpriteImage := imaging.Rotate(spriteImg, rotationAngle, bgColor)
-				newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, rotatedSpriteImage, newX, newY)
-			} else {
-				newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, spriteImg, newX, newY)
-			}
+			rotatedSpriteImage := imaging.Rotate(spriteImg, rotationAngle, bgColor)
+			newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, rotatedSpriteImage, newX, newY)
 		}
 	}
 
