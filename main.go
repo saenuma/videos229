@@ -138,12 +138,12 @@ Main Commands:
 				outName = sprites.Method1(conf)
 			} else if confFilenameparts[1] == "2" {
 				outName = sprites.Method2(conf)
-				// } else if confFilenameparts[1] == "3" {
-				// 	outName = sprites.Method3(conf)
+			} else if confFilenameparts[1] == "3" {
+				outName = sprites.Method3(conf)
 			} else if confFilenameparts[1] == "4" {
 				outName = sprites.Method4(conf)
-			} else if confFilenameparts[1] == "5" {
-				outName = sprites.Method5(conf)
+				// } else if confFilenameparts[1] == "5" {
+				// 	outName = sprites.Method5(conf)
 			} else {
 				color2.Red.Println("The method code is invalid.")
 				os.Exit(1)

@@ -41,7 +41,7 @@ gutter: 20
 increment: 10
 	`
 
-// method3 for rotation in place style
+// method2 for rotation in place style
 func Method2(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
