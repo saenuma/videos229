@@ -1,12 +1,11 @@
 package sprites
 
 import (
-	"os"
-	// "fmt"
 	"image"
 	"image/color"
+	"image/draw"
 	"math"
-	"math/rand"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -32,15 +31,15 @@ video_height: 768
 // video_length is the length of the output video in seconds
 video_length: 10
 
-//vary to your tastes
-radius: 100
+// scale. a float to resize the sprite
+scale: 1.0
 
-// vary to your tastes (higher faster, lower slower)
-increment: 10
+// gutter. a int to add padding to the sprite
+gutter: 20
 
 	`
 
-// method1 generates a video with the sprite dancing round a circle
+// method1 for disappearing pattern style
 func Method1(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
@@ -60,47 +59,79 @@ func Method1(conf zazabul.Config) string {
 		os.Exit(1)
 	}
 
-	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	// get animation variables
+	var increment = 5
 	totalSeconds, _ := strconv.Atoi(conf.Get("video_length"))
 	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
 	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
-	radius, _ := strconv.Atoi(conf.Get("radius"))
-	angleIncrement, _ := strconv.Atoi(conf.Get("increment"))
+	gutter, _ := strconv.Atoi(conf.Get("gutter"))
+	scale, err := strconv.ParseFloat(conf.Get("scale"), 64)
+	if err != nil {
+		color2.Red.Println("Invalid scale value. Expecting a float")
+		os.Exit(1)
+	}
+	spriteImg = scaleSprite(spriteImg, scale)
+	spriteImg = addGutter(spriteImg, gutter, backgroundColor)
 
 	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
-	xOrigin := rand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
-	yOrigin := rand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-	xOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dx()) - (spriteImg.Bounds().Dx() / 2)
-	yOrigin2 := seededRand.Intn(backgroundImg.Bounds().Dy()) - (spriteImg.Bounds().Dy() / 2)
-
-	var tinyAngle float64
-
+	var transparency = 255
 	for seconds := 0; seconds < totalSeconds; seconds++ {
 		for i := 1; i <= 24; i++ {
 			out := (24 * seconds) + i
 			outPath := filepath.Join(renderPath, strconv.Itoa(out)+".png")
 
-			tinyAngle += float64(angleIncrement)
+			transparency -= increment
+			if transparency <= 0 {
+				transparency = 255
+			}
 
-			toWriteImage := writeRotation(backgroundImg, spriteImg, xOrigin, yOrigin, radius, tinyAngle)
-			toWriteImage = writeRotation(toWriteImage, spriteImg, xOrigin2, yOrigin2, radius, tinyAngle)
+			toWriteImage := makePattern(backgroundImg, spriteImg, uint8(transparency))
 			imaging.Save(toWriteImage, outPath)
 		}
+
 	}
 
 	return outName
 }
 
-func writeRotation(background, sprite image.Image, xOrigin, yOrigin, radius int, angle float64) image.Image {
-	angleInRadians := angle * (math.Pi / 180)
-	xCircle := float64(radius) * math.Sin(angleInRadians)
-	yCircle := float64(radius) * math.Cos(angleInRadians)
+func makePattern(backgroundImg, spriteImg image.Image, transparency uint8) *image.NRGBA {
+	numberOfXIterations := int(backgroundImg.Bounds().Dx() / spriteImg.Bounds().Dx())
+	numberOfYIternations := int(backgroundImg.Bounds().Dy() / spriteImg.Bounds().Dy())
 
-	newBackgroundImg := imaging.New(background.Bounds().Dx(), background.Bounds().Dy(), color.White)
-	newBackgroundImg = imaging.Paste(newBackgroundImg, background, image.Pt(0, 0))
+	newBackgroundImg := imaging.New(backgroundImg.Bounds().Dx(), backgroundImg.Bounds().Dy(), color.White)
+	newBackgroundImg = imaging.Paste(newBackgroundImg, backgroundImg, image.Pt(0, 0))
 
-	return pasteWithoutTransparentBackground(newBackgroundImg, sprite, xOrigin+int(xCircle), yOrigin+int(yCircle))
+	for x := 0; x < numberOfXIterations+1; x++ {
+		for y := 0; y < numberOfYIternations+1; y++ {
+			newX := x * spriteImg.Bounds().Dx()
+			newY := y * spriteImg.Bounds().Dy()
+
+			if int(math.Mod(float64(y), float64(2))) == 0 {
+				if int(math.Mod(float64(x), float64(2))) == 0 {
+					newBackgroundImg = pasteWithoutTransparentBackground2(newBackgroundImg, spriteImg, newX, newY, transparency)
+				} else {
+					newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, spriteImg, newX, newY)
+				}
+
+			} else {
+				if int(math.Mod(float64(x), float64(2))) == 0 {
+					newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, spriteImg, newX, newY)
+				} else {
+					newBackgroundImg = pasteWithoutTransparentBackground2(newBackgroundImg, spriteImg, newX, newY, transparency)
+				}
+			}
+		}
+	}
+
+	return newBackgroundImg
+}
+
+func pasteWithoutTransparentBackground2(backgroundImg *image.NRGBA, spriteImg image.Image, xOrigin, yOrigin int, transparency uint8) *image.NRGBA {
+
+	newRectangle := image.Rect(xOrigin, yOrigin, xOrigin+spriteImg.Bounds().Dx(), yOrigin+spriteImg.Bounds().Dy())
+	draw.DrawMask(backgroundImg, newRectangle, spriteImg, image.Pt(0, 0),
+		image.NewUniform(color.RGBA{255, 255, 255, uint8(transparency)}), image.Pt(0, 0),
+		draw.Over)
+
+	return backgroundImg
 }
