@@ -10,11 +10,27 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kovidgoyal/imaging"
 	color2 "github.com/gookit/color"
+	"github.com/kovidgoyal/imaging"
 	"github.com/lucasb-eyer/go-colorful"
 	"github.com/saenuma/zazabul"
 )
+
+var Method2Conf = `// background_color is the color of the background image. Example is #af1382
+background_color: #ffffff
+
+// sprite_file. A sprite is a unit of a pattern in imagery.
+sprite_file:
+
+// video_width is the width of the output video in int
+video_width: 1366
+
+// video_height is the height of the output video in width
+video_height: 768
+
+// video_length is the length of the output video in seconds
+video_length: 10
+	`
 
 // method2 for disappearing pattern style
 func Method2(conf zazabul.Config) string {
