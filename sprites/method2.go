@@ -15,7 +15,7 @@ import (
 	"github.com/saenuma/zazabul"
 )
 
-var Method3Conf = `// background_color is the color of the background image. Example is #af1382
+var Method2Conf = `// background_color is the color of the background image. Example is #af1382
 background_color: #ffffff
 
 // sprite_file. A sprite is a unit of a pattern in imagery.
@@ -31,12 +31,18 @@ video_height: 768
 // video_length is the length of the output video in seconds
 video_length: 10
 
-// increment is the incrememt to add to each rotation in this movement
+// scale. a float to resize the sprite
+scale: 1.0
+
+// gutter. a int to add padding to the sprite
+gutter: 20
+
+// increment is the increment to add to each rotation in this movement
 increment: 10
 	`
 
 // method3 for rotation in place style
-func Method3(conf zazabul.Config) string {
+func Method2(conf zazabul.Config) string {
 	rootPath, _ := GetRootPath()
 
 	outName := "sp_" + time.Now().Format("20060102T150405")
@@ -57,6 +63,15 @@ func Method3(conf zazabul.Config) string {
 
 	videoWidth, _ := strconv.Atoi(conf.Get("video_width"))
 	videoHeight, _ := strconv.Atoi(conf.Get("video_height"))
+
+	gutter, _ := strconv.Atoi(conf.Get("gutter"))
+	scale, err := strconv.ParseFloat(conf.Get("scale"), 64)
+	if err != nil {
+		color2.Red.Println("Invalid scale value. Expecting a float")
+		os.Exit(1)
+	}
+	spriteImg = scaleSprite(spriteImg, scale)
+	spriteImg = addGutter(spriteImg, gutter, backgroundColor)
 
 	backgroundImg := imaging.New(videoWidth, videoHeight, backgroundColor)
 
@@ -95,7 +110,8 @@ func makePatternWithRotations(backgroundImg, spriteImg image.Image, rotationAngl
 				newY := (y * spriteImg.Bounds().Dy())
 
 				rotatedSpriteImage := imaging.Rotate(spriteImg, rotationAngle, bgColor)
-				newSpriteImg := imaging.New(spriteImg.Bounds().Dx(), spriteImg.Bounds().Dy(), color.Transparent)
+				newWidth, newHeight := float64(spriteImg.Bounds().Dx())*1.5, float64(spriteImg.Bounds().Dy())*1.5
+				newSpriteImg := imaging.New(int(newWidth), int(newHeight), color.Transparent)
 				newSpriteImg = imaging.PasteCenter(newSpriteImg, rotatedSpriteImage)
 
 				newBackgroundImg = pasteWithoutTransparentBackground(newBackgroundImg, newSpriteImg, newX, newY)
