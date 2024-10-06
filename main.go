@@ -15,7 +15,7 @@ import (
 	"github.com/saenuma/zazabul"
 )
 
-const VersionFormat = "20060102T150405MST"
+const VersionFormat = "150405"
 
 var configTemplates map[string]string = make(map[string]string)
 
@@ -86,7 +86,7 @@ Main Commands:
 		tmpl, ok := configTemplates[os.Args[2]]
 		if ok {
 			stub := strings.ReplaceAll(inputMethod, "/", "_") + "_"
-			configFileName := stub + time.Now().Format("20060102T150405") + ".zconf"
+			configFileName := stub + time.Now().Format(VersionFormat) + ".zconf"
 			writePath := filepath.Join(rootPath, configFileName)
 
 			conf, err := zazabul.ParseConfig(tmpl)
@@ -161,7 +161,7 @@ Main Commands:
 
 		command := v2shared.GetFFMPEGCommand()
 
-		outPath := filepath.Join(rootPath, "video_"+time.Now().Format("20060102T150405")+".mp4")
+		outPath := filepath.Join(rootPath, "video_"+time.Now().Format(VersionFormat)+".mp4")
 		out, err := exec.Command(command, "-framerate", "24", "-i", filepath.Join(rootPath, outName, "%d.png"),
 			"-pix_fmt", "yuv420p", outPath).CombinedOutput()
 		if err != nil {
