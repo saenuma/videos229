@@ -62,8 +62,8 @@ func Method1(conf zazabul.Config) string {
 		aPicPath := filepath.Join(fullPicsPath, dirFI.Name())
 		aPicOpened, _ := imaging.Open(aPicPath)
 		if aPicOpened.Bounds().Dx() != videoWidth || aPicOpened.Bounds().Dy() != videoHeight {
-			color2.Red.Printf("The width of the picture '%s'\n is not '%s' or the height is not '%s'.\nExiting.\n",
-				videoWidth, videoHeight, aPicPath)
+			color2.Red.Printf("The width of the picture '%s'\n is not '%d' or the height is not '%d'.\nExiting.\n",
+				aPicPath, videoWidth, videoHeight)
 			os.Exit(1)
 		}
 		picsBytes[i] = aPicOpened
