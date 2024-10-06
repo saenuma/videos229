@@ -15,6 +15,7 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 
 platforms:
   - build-on: amd64
+  - build-for: amd64
 
 parts:
   my-part:
