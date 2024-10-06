@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/disintegration/imaging"
+	"github.com/kovidgoyal/imaging"
 	color2 "github.com/gookit/color"
 	"github.com/saenuma/videos229/v2shared"
 	"github.com/saenuma/zazabul"

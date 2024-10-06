@@ -1,10 +1,10 @@
 module github.com/saenuma/videos229
 
-go 1.17
+go 1.23.2
 
 require (
-	github.com/disintegration/imaging v1.6.2
 	github.com/gookit/color v1.5.4
+	github.com/kovidgoyal/imaging v1.6.3
 	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/saenuma/zazabul v1.1.4

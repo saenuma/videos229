@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/disintegration/imaging"
+	"github.com/kovidgoyal/imaging"
 	color2 "github.com/gookit/color"
 	"github.com/lucasb-eyer/go-colorful"
 	"github.com/saenuma/zazabul"
